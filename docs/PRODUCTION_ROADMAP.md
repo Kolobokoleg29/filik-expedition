@@ -170,3 +170,4 @@
 - Browser audit основных fallback-маршрутов на mobile 390×844 и desktop 1280×900 не выявил console/resource errors и горизонтального clipping у страниц, модальных окон, магазина, карты, дневника и спутников.
 - Исправлен подтверждённый mobile overflow в журнале целей: category tabs теперь переносятся в пределах модального окна, а не уходят за viewport скрытой горизонтальной полосой.
 - Добавлен Playwright regression на ширину и границы category tabs в mobile goals modal.
+- Добавлены flow regression-тесты для запуска daily route и корректного двухступенчатого Escape в weekly → leaderboard nested modal.
