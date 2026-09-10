@@ -95,7 +95,7 @@
 
 - Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
 - Добавлены 22 unit-теста для core, config, economy, storage и commerce.
-- Добавлены 2 Playwright smoke-теста; они собирают dist и проверяют production preview.
+- Добавлены 3 Playwright smoke-теста; они собирают dist и проверяют production preview.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
 - Local verification: npm run check:all проходит.

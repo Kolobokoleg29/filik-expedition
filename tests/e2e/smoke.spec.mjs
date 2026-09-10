@@ -41,3 +41,30 @@ test("keeps the game usable at the mobile viewport", async ({ page }) => {
   expect(dimensions.documentWidth).toBeLessThanOrEqual(dimensions.viewportWidth + 1);
   expect(dimensions.boardVisible).toBe(true);
 });
+test("opens the primary fallback surfaces", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await page.locator("[data-action='home']").first().click();
+  await expect(page.locator(".home")).toBeVisible();
+
+  const routes = [
+    ["map", ".map-screen"],
+    ["album", ".album-screen"],
+    ["pets", ".pets-screen"],
+    ["goals", ".modal"],
+    ["weekly", ".modal"],
+    ["shop", ".modal"],
+    ["settings", ".modal"]
+  ];
+
+  for (const [action, selector] of routes) {
+    await page.locator("[data-action='" + action + "']").first().click();
+    await expect(page.locator(selector)).toBeVisible();
+    if (selector === ".modal") {
+      await page.keyboard.press("Escape");
+    } else {
+      await page.locator("[data-action='home']").first().click();
+    }
+    await expect(page.locator(".home")).toBeVisible();
+  }
+});
