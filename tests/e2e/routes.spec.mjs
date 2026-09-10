@@ -77,6 +77,7 @@ test("keeps the next route visible in the diary", async ({ page }) => {
   await expect(page.locator(".album-screen")).toBeVisible()
   await expect(page.locator('.collection-card[data-current="true"]')).toHaveCount(1)
   await expect(page.locator('.collection-card[data-current="true"] .small')).toContainText("Ваш маршрут")
+  await expect(page.locator('.collection-card[data-current="true"] .icon')).toHaveCount(0)
   await page.locator('.collection-card[data-current="true"]').click()
   await expect(page.locator(".story-modal-hero")).toBeVisible()
 })
