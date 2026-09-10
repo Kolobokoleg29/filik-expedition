@@ -95,7 +95,7 @@ function showFirstRunTutorial(){
  const guide=document.createElement('div');
  guide.className='tutorial-guide';
  guide.setAttribute('aria-live','polite');
- guide.innerHTML=`<div class="tutorial-callout"><strong>Первое слово рядом</strong><span>Проведите по подсвеченным буквам</span><b>${escapeHTML(ui.tutorialWord)}</b></div><span class="tutorial-hand" aria-hidden="true">${icon('hand','tutorial-hand-icon')}</span>`;
+ guide.innerHTML=`<div class="tutorial-callout"><strong>Первое слово рядом</strong><span>Проведите по подсвеченным буквам</span><b>${escapeHTML(ui.tutorialWord)}</b></div><span class="tutorial-hand" aria-hidden="true">${icon('tutorialHand','tutorial-hand-icon')}</span>`;
  document.body.append(guide);
  updateTutorialGuide();
  analytics.send('tutorial_step',{step:'first_level_started'});

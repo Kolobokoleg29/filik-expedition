@@ -28,6 +28,7 @@ export const ASSET_MANIFEST = Object.freeze({
       chestOpen: "bonus_chest_open",
       lantern: "camp_lantern",
       routeCompass: "meta/route_compass_styled",
+      tutorialHand: "meta/tutorial_hand_styled",
       routeMap: "meta/route_map_styled",
       routeCampfire: "meta/route_campfire_styled",
       routeComplete: "meta/route_complete",

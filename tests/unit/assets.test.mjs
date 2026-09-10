@@ -28,4 +28,5 @@ test("resolves authored decorative illustration assets", () => {
   assert.equal(ASSET_MANIFEST.ui.icons.routeMap, "meta/route_map_styled");
   assert.equal(ASSET_MANIFEST.ui.icons.routeCampfire, "meta/route_campfire_styled");
   assert.equal(ASSET_MANIFEST.ui.icons.routeLocked, "meta/route_locked_styled");
+  assert.equal(ASSET_MANIFEST.ui.icons.tutorialHand, "meta/tutorial_hand_styled");
 });

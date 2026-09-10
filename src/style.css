@@ -812,3 +812,14 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
   .profile-custom-group[data-profile-group="portrait"] .profile-custom-option .shop-asset-icon,
   .profile-custom-group[data-profile-group="portrait"] .profile-custom-option .captain-avatar-image{height:112px}
 }
+
+
+/* Settings compact controls: keep the switch thumb inside its track and the copy column shrinkable. */
+#modal-root .modal[data-modal-type="settings"] .settings-row{grid-template-columns:minmax(0,1fr) 48px;align-items:center;gap:12px}
+#modal-root .modal[data-modal-type="settings"] .settings-row>div{min-width:0}
+#modal-root .modal[data-modal-type="settings"] .settings-row strong{display:block;line-height:1.25}
+#modal-root .modal[data-modal-type="settings"] .settings-row p{max-width:45ch;line-height:1.35}
+#modal-root .modal[data-modal-type="settings"] .switch{box-sizing:border-box;flex:0 0 48px;width:48px;min-width:48px;height:28px;padding:3px;justify-self:end}
+#modal-root .modal[data-modal-type="settings"] .switch:after{width:20px;height:20px}
+#modal-root .modal[data-modal-type="settings"] .switch.on:after{transform:translateX(20px)}
+@media(max-width:700px){#modal-root .modal[data-modal-type="settings"] .settings-row{gap:10px}#modal-root .modal[data-modal-type="settings"] .settings-row p{line-height:1.3}}

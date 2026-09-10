@@ -94,6 +94,34 @@ test("keeps modal semantics and focus contained", async ({ page }) => {
   await expect(settings).toBeFocused();
 });
 
+
+test("keeps settings switches inside their tracks on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.locator("[data-action=settings]").first().click();
+  await expect(page.locator('[data-modal-type="settings"]')).toBeVisible();
+
+  const metrics = await page.evaluate(() => [...document.querySelectorAll('[data-modal-type="settings"] .settings-row')].map((row) => {
+    const track = row.querySelector(".switch");
+    const trackRect = track.getBoundingClientRect();
+    const rowRect = row.getBoundingClientRect();
+    const style = getComputedStyle(track, "::after");
+    const transform = style.transform.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*([^,]+)/);
+    const translateX = transform ? Number.parseFloat(transform[1]) : 0;
+    const inset = Number.parseFloat(getComputedStyle(track).borderLeftWidth) + Number.parseFloat(getComputedStyle(track).paddingLeft);
+    const thumbLeft = trackRect.left + inset + translateX;
+    const thumbRight = thumbLeft + Number.parseFloat(style.width);
+    return { rowLeft: rowRect.left, rowRight: rowRect.right, trackLeft: trackRect.left, trackRight: trackRect.right, thumbLeft, thumbRight, inset };
+  }));
+
+  expect(metrics).toHaveLength(4);
+  for (const item of metrics) {
+    expect(item.trackLeft).toBeGreaterThanOrEqual(item.rowLeft - 1);
+    expect(item.trackRight).toBeLessThanOrEqual(item.rowRight + 1);
+    expect(item.thumbLeft).toBeGreaterThanOrEqual(item.trackLeft + item.inset - 1);
+    expect(item.thumbRight).toBeLessThanOrEqual(item.trackRight - item.inset + 1);
+  }
+});
 test("updates the live game status through keyboard input", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();

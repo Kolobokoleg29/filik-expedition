@@ -4,7 +4,7 @@ import { ASSET_MANIFEST } from "../src/asset-manifest.js";
 
 const root = process.cwd();
 const errors = [];
-const keys = ["compass", "locked", "mapRouteCompass", "mapNodeCurrent", "mapNodeComplete", "mapNodeLocked", "routeCompass", "routeMap", "routeCampfire", "routeComplete", "routeLocked"];
+const keys = ["compass", "locked", "mapRouteCompass", "mapNodeCurrent", "mapNodeComplete", "mapNodeLocked", "routeCompass", "routeMap", "routeCampfire", "routeComplete", "routeLocked", "tutorialHand"];
 for (const key of keys) {
   const relative = "assets/UI/" + ASSET_MANIFEST.ui.icons[key] + ".png";
   const file = path.join(root, relative);
