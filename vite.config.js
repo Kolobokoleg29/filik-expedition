@@ -10,7 +10,15 @@ function copyStaticGameFiles() {
     apply: "build",
     closeBundle() {
       const outDir = path.resolve("dist");
-      fs.cpSync(path.resolve("assets"), path.join(outDir, "assets"), { recursive: true });
+      const outAssets = path.join(outDir, "assets");
+      fs.cpSync(path.resolve("assets/UI"), path.join(outAssets, "UI"), { recursive: true });
+      const indexPath = path.join(outDir, "index.html");
+      const index = fs.readFileSync(indexPath, "utf8");
+      const canonicalIndex = index.replace(/\.\/assets\/app_icon-[^"]+\.png/g, "./assets/UI/app_icon.png");
+      if (canonicalIndex !== index) fs.writeFileSync(indexPath, canonicalIndex);
+      for (const file of fs.readdirSync(outAssets)) {
+        if (/^app_icon-.*\.png$/.test(file)) fs.unlinkSync(path.join(outAssets, file));
+      }
       for (const file of staticDataFiles) {
         fs.copyFileSync(path.resolve(file), path.join(outDir, file));
       }

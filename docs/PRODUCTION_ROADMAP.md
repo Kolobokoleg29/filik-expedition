@@ -156,3 +156,11 @@
 - Добавлены 5 unit-тестов для ad error/timeout, cloud retry и idempotent purchase paths.
 - Real SDK, cloud, ads, payments и leaderboard всё ещё требуют ручной проверки в draft/staging кабинете Яндекс Игр перед публикацией.
 - Local verification: npm run test:unit проходит полностью.
+## P1 loading/performance checkpoint — 2026-09-10
+
+- Удалены конкурирующие HTML background preloads и static CSS fallback, которые дублировали первый фон и создавали hashed/literal расхождение.
+- Runtime сохраняет один responsive background request через canonical assets/UI paths; CSS custom property использует stylesheet-relative ../assets base.
+- Vite build-plugin копирует только assets/UI, canonical favicon перепривязывается к UI-файлу, лишние hashed favicon и дублирующие root fonts не попадают в release archive.
+- Добавлен Playwright performance regression: computed background не равен none, нет /assets/assets paths или failed requests, mobile не получает horizontal overflow.
+- Новый baseline: initial 258 KB, total dist 25,202 KB, desktop/mobile boot без duplicate camp background requests.
+- Local verification: npm run build, npm run test:budget, npm run test:release и performance E2E проходят.
