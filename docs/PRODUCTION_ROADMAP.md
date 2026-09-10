@@ -221,3 +221,8 @@
 - Добавлен единый src/data-loader.js для JSON-каталогов: timeout, повтор transient-ошибок и отказ без повторов для постоянного HTTP failure.
 - Campaign, endless и live-config используют общий loader; зависший fetch больше не блокирует boot бесконечно.
 - Добавлены unit-тесты на retry, permanent HTTP failure и timeout.
+
+## P1 commerce receipt-boundary checkpoint — 2026-09-10
+
+- Receipt ledger теперь отклоняет повторное использование уже привязанного purchase token для другого product ID.
+- Добавлен regression-тест; выдача и consume для корректного повторного callback остаются idempotent.

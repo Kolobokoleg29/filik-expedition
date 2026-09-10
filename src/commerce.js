@@ -9,6 +9,7 @@ const COIN_PACKS={
  coins_expedition:{base:18000,bonus:9000,total:27000}
 };
 const tokenOf=purchase=>typeof purchase?.purchaseToken==='string'?purchase.purchaseToken:'';
+const receiptProduct=(state,token)=>state.purchaseLedger?.[token]?.productId||'';
 
 export class CommerceService{
  constructor({platform,store,analytics,getConfig,save}){
@@ -60,6 +61,7 @@ export class CommerceService{
   const coinProduct=Object.entries(config.catalog).find(([key,id])=>key.startsWith('coins_')&&id===productId);
   if(coinProduct){
    const token=tokenOf(purchase);if(!token)return {ok:false,reason:'missing-token',productId};
+   const existingProduct=receiptProduct(state,token);if(existingProduct&&existingProduct!==productId)return {ok:false,reason:'receipt-product-mismatch',productId};
    const amount=COIN_PACKS[coinProduct[0]]?.total||0,already=this.receiptKnown(token);
    if(!already){state.coins+=amount;this.recordReceipt(token,productId,amount);this.save();}
    else if(!state.purchaseLedger?.[token]){this.recordReceipt(token,productId,amount);this.save();}
@@ -75,6 +77,7 @@ export class CommerceService{
   if(productId!==config.catalog.starter_explorer)return {ok:false,reason:'unknown-product',productId};
   const token=tokenOf(purchase);
   if(!token)return {ok:false,reason:'missing-token',productId};
+  const existingProduct=receiptProduct(state,token);if(existingProduct&&existingProduct!==productId)return {ok:false,reason:'receipt-product-mismatch',productId};
   const already=this.receiptKnown(token);
   if(!already&&state.starterClaimed){
    // Набор исследователя — разовая стартовая покупка. Новый чек после

@@ -36,3 +36,21 @@ test("grants a coin receipt once and consumes it after cloud save", async () => 
   assert.equal(state.purchaseLedger["receipt-1"].status, "consumed");
   assert.equal(events.includes("consume:receipt-1"), true);
 });
+
+test("rejects a receipt token reused for another product", async () => {
+  const state = freshState();
+  state.purchaseLedger["receipt-1"] = { productId: "expedition_coins_500", amount: 500, status: "pending", updatedAt: 0 };
+  state.processedPurchases.push("receipt-1");
+  state.purchaseGrants["receipt-1"] = 500;
+  const service = new CommerceService({
+    platform: { cloudReady: true, async flush() { return true; }, async consume() { return true; } },
+    store: { state },
+    analytics: { send() {} },
+    getConfig: () => normalizeConfig(),
+    save() {}
+  });
+  const result = await service.applyPurchase({ id: "expedition_coins_1200", purchaseToken: "receipt-1" });
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, "receipt-product-mismatch");
+  assert.equal(state.coins, 120);
+});
