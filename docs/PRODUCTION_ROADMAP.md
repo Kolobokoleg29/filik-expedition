@@ -172,6 +172,7 @@
 - Добавлен Playwright regression на ширину и границы category tabs в mobile goals modal.
 - Добавлены flow regression-тесты для запуска daily route и корректного двухступенчатого Escape в weekly → leaderboard nested modal.
 - Для коротких mobile viewport home теперь вертикально прокручивается: weekly CTA и подпись не теряются за нижней границей экрана.
+- Добавлен browser asset-loading regression: после прокрутки lazy-контента все изображения map/album/pets загружаются на mobile и desktop без broken requests.
 
 ## P1 account refresh checkpoint — 2026-09-10
 
