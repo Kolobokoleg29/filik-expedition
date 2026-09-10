@@ -180,3 +180,10 @@
 - При re-auth/account selection refreshPlayer и SDK close-событие очищают account-bound player/payments caches и сбрасывают cloudReady до подтверждения новой сессии.
 - Ошибка получения нового cloud player теперь остаётся fail-closed, чтобы старое cloud/payment состояние не использовалось для другого аккаунта; локальный fallback сохраняется.
 - Добавлены reliability tests для успешного cache reset и неуспешного account refresh.
+
+
+## P1 commerce reliability checkpoint — 2026-09-10
+
+- CommerceService теперь сериализует purchase и restore: параллельные операции возвращают явный busy-результат и не открывают второй платежный поток.
+- UI сообщает игроку, что другая операция покупки ещё выполняется; существующий receipt ledger и порядок cloud save → consume сохранены.
+- Добавлен unit regression на взаимную блокировку buy/restore; полный набор вырос до 41 теста.

@@ -179,3 +179,49 @@ test("invalidates account caches on SDK account close", async () => {
   assert.equal(platform.cloudReady, false);
   assert.equal(platform.paused, false);
 });
+
+
+test("serializes purchase and restore operations", async () => {
+  const state = freshState();
+  let resolvePurchase;
+  let resolveRestore;
+  let purchaseCalls = 0;
+  const service = new CommerceService({
+    platform: {
+      cloudReady: true,
+      async purchase() {
+        purchaseCalls++;
+        return new Promise(resolve => { resolvePurchase = resolve; });
+      },
+      async restorePurchases() {
+        return new Promise(resolve => { resolveRestore = resolve; });
+      },
+      async flush() { return true; },
+      async consume() { return true; }
+    },
+    store: { state },
+    analytics: makeAnalytics(),
+    getConfig: () => normalizeConfig(),
+    save() {}
+  });
+
+  const purchasePromise = service.buy("expedition_coins_500");
+  await Promise.resolve();
+  assert.equal(service.busy, "purchase");
+  assert.equal((await service.buy("expedition_coins_1200")).reason, "busy");
+  assert.equal((await service.recover()).reason, "busy");
+
+  resolvePurchase({ id: "expedition_coins_500", purchaseToken: "serial-1" });
+  const purchase = await purchasePromise;
+  assert.equal(purchase.ok, true);
+  assert.equal(purchaseCalls, 1);
+  assert.equal(service.busy, null);
+
+  const restorePromise = service.recover();
+  await Promise.resolve();
+  assert.equal(service.busy, "restore");
+  assert.equal((await service.buy("expedition_coins_500")).reason, "busy");
+  resolveRestore([]);
+  assert.deepEqual(await restorePromise, { ok: true, restored: 0 });
+  assert.equal(service.busy, null);
+});

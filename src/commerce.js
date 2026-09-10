@@ -21,6 +21,7 @@ export class CommerceService{
   this.catalogState='idle';
   this.catalogAttempts=0;
   this.catalogUpdatedAt=0;
+  this.busy=null;
  }
  async loadCatalog({force=false}={}){
   if(!this.available()){this.catalogState='disabled';return []}
@@ -95,24 +96,32 @@ export class CommerceService{
   return {ok:true,productId,changed:!already,kind:'starter'};
  }
  async recover(){
+  if(this.busy)return {ok:false,restored:0,reason:'busy'};
   if(!this.available())return {ok:false,restored:0,reason:'disabled'};
   if(!this.platform.cloudReady)return {ok:false,restored:0,reason:'cloud-unavailable'};
-  const purchases=await this.platform.restorePurchases();
-  let restored=0;
-  for(const purchase of purchases){const result=await this.applyPurchase(purchase);if(result.ok)restored++;}
-  return {ok:true,restored};
+  this.busy='restore';
+  try{
+   const purchases=await this.platform.restorePurchases();
+   let restored=0;
+   for(const purchase of purchases){const result=await this.applyPurchase(purchase);if(result.ok)restored++;}
+   return {ok:true,restored};
+  }finally{this.busy=null;}
  }
  async buy(productId){
+  if(this.busy)return {ok:false,reason:'busy',productId};
   if(!this.available())return {ok:false,reason:'disabled'};
   if(!this.platform.cloudReady)return {ok:false,reason:'cloud-unavailable'};
-  this.analytics.send('purchase_start',{product:productId});
-  const purchase=await this.platform.purchase(productId);
-  if(!purchase){this.analytics.send('purchase_cancel',{product:productId});return {ok:false,reason:'cancel'};}
-  const actual=purchaseProductId(purchase);
-  if(actual!==productId){this.analytics.send('purchase_invalid',{expected:productId,actual:actual||'unknown'});return {ok:false,reason:'product-mismatch'};}
-  const result=await this.applyPurchase(purchase);
-  if(!result.ok){this.analytics.send('purchase_invalid',{expected:productId,actual:'invalid_receipt'});return result;}
-  this.analytics.send('purchase_success',{product:productId});
-  return result;
+  this.busy='purchase';
+  try{
+   this.analytics.send('purchase_start',{product:productId});
+   const purchase=await this.platform.purchase(productId);
+   if(!purchase){this.analytics.send('purchase_cancel',{product:productId});return {ok:false,reason:'cancel'};}
+   const actual=purchaseProductId(purchase);
+   if(actual!==productId){this.analytics.send('purchase_invalid',{expected:productId,actual:actual||'unknown'});return {ok:false,reason:'product-mismatch'};}
+   const result=await this.applyPurchase(purchase);
+   if(!result.ok){this.analytics.send('purchase_invalid',{expected:productId,actual:'invalid_receipt'});return result;}
+   this.analytics.send('purchase_success',{product:productId});
+   return result;
+  }finally{this.busy=null;}
  }
 }
