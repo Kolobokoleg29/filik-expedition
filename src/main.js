@@ -3,9 +3,8 @@ import {ABILITIES,applyCompanionEvent} from './companions.js';
 import {captainById,captainIsUnlocked,unlockCaptains,captainTitle as captainName,captainMotto} from './captains.js';
 import {applyCampaignCompletion,applyEndlessCompletion,applyDailyCompletion} from './progression.js';
 import {CHAPTERS,COMPANIONS} from './content.js';
-import {CHAPTER_IMAGES} from './chapter-images.js';
+import {artifactAsset as artifactImage,backgroundAsset,chapterAsset,companionAsset} from './asset-manifest.js';
 import {chapterVisual} from './chapter-visuals.js';
-import {artifactImage} from './artifact-images.js';
 import {normalizeWord,keyboardLetter,cellsFor,classifyWord,emptyProgress,validateProgress,dateKey,previousDay,levelStars,starsTotal,nextLevel,endlessPoolIndex,levelDifficulty} from './core.js';
 import {SaveStore} from './storage.js';
 import {YandexPlatform} from './platform.js';
@@ -13,7 +12,6 @@ import {GameAudio} from './audio.js';
 import {icon} from './icons.js';
 import {Analytics} from './analytics.js';
 import {normalizeConfig,configDefaultFlags,applyRemoteFlags} from './config.js';
-import {wideChapterDir} from './backgrounds.js';
 import {weekKey,ensureRewardedDay as ensureRewardedDayState,rewardedRemaining as economyRewardedRemaining,dailyGiftOffer,buyShopItem,claimGoal,claimWeekly,GOALS,goalValue} from './economy.js';
 import {CommerceService} from './commerce.js';
 import {createMetaScreens} from './meta-screens.js';
@@ -45,7 +43,7 @@ const rewardedCfg=()=>liveConfig.rewarded;
 const ensureRewardedDay=()=>ensureRewardedDayState(state(),dateKey(platform.now()));
 const rewardedRemaining=kind=>economyRewardedRemaining(state(),kind,dateKey(platform.now()),rewardedCfg());
 const endlessKey=n=>`e:${n}`;
-const petImage=(p,pose='calm')=>{const mapped=emotionPets?.has(p.id)?pose==='victory'?'happy':pose==='expedition'?'support':pose:pose;return `./assets/UI/companions/${p.id}-${mapped}.png`;};
+const petImage=(p,pose='calm')=>{const mapped=emotionPets?.has(p.id)?pose==='victory'?'happy':pose==='expedition'?'support':pose:pose;return companionAsset(p.id,mapped);};
 const gameCompanion=()=>{const p=COMPANIONS.find(entry=>entry.id===state().activePet);return p?`<span class="companion-anchor"><span class="game-companion" title="Спутник: ${p.name}" aria-label="Спутник: ${p.name}"><img src="${petImage(p)}" alt=""></span><span class="companion-speech" id="companion-speech" aria-live="polite" hidden></span></span>`:'';};
 let companionTimer;
 const emotionPets=new Set(['owl','fox','wolf','bear','camel','eagle','snake','elephant','turtle','deer','pard','lion']);
@@ -60,16 +58,15 @@ const captainTitle=()=>captainName(state());
 const captainMottoText=()=>captainMotto(state());
 const escapeHTML=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const chapterFor=id=>CHAPTERS[Math.min(37,Math.floor((id-1)/8))];
-const chapterImage=index=>`./assets/UI/chapters/${CHAPTER_IMAGES[index]}`;
-const chapterWideImage=index=>`./assets/UI/${wideChapterDir(CHAPTER_IMAGES[index])}/${CHAPTER_IMAGES[index]}`;
+const chapterImage=index=>chapterAsset(index,'portrait');
+const chapterWideImage=index=>chapterAsset(index,'wide');
 const stars=(n=3)=>`<span class="stars">${[1,2,3].map(i=>i>n?icon('star','empty'):icon('rewardStar')).join('')}</span>`;
 const btn=(act,name,ic,cls='secondary',extra='')=>`<button class="${cls}" data-action="${act}" ${extra}>${ic?icon(ic):''}${name}</button>`;
 const initialGamePrompt=(mode,id)=>mode==='campaign'&&id===1?'Нажмите буквы по очереди или проведите по ним':mode==='campaign'&&id<=2?'Соберите слово из букв круга':'Проведите по буквам';
 const iconBtn=(act,label,ic)=>act==='profile'?`<button class="icon-button captain-home-button" data-action="profile" aria-label="${label}" title="${label}">${captainAvatar()}</button>`:btn(act,'',ic,'icon-button',`aria-label="${label}" title="${label}"`);
 const coinPill=()=>btn('wallet',`${icon('rewardCoin')}<span data-coins>${formatCoins(state().coins)}</span>`,'','pill',`aria-label="Монеты и подсказки: ${state().coins}" title="${state().coins} монет"`);
 const topbar=(name,back='home')=>`<header class="topbar"><div class="row">${iconBtn(back,'На главную','back')}<span class="nav-label">${name}</span></div><div class="row">${coinPill()}${iconBtn('settings','Настройки','settings')}</div></header>`;
-function setBackground(index=null){const el=document.querySelector('#landscape');const cssUrl=file=>`url("./assets/UI/${file}")`;if(index===null){el.style.setProperty('--bg-landscape',cssUrl('wide-ai/camp_intro.webp'));el.style.setProperty('--bg-portrait',cssUrl('chapters/'+CHAPTER_IMAGES[0]));el.style.setProperty('--bg-shade','.42');el.style.setProperty('--bg-landscape-position','center 46%');el.style.setProperty('--bg-mobile-position','center 58%');return;}const visual=chapterVisual(index);el.style.setProperty('--bg-landscape',cssUrl(`${wideChapterDir(CHAPTER_IMAGES[index])}/${CHAPTER_IMAGES[index]}`));el.style.setProperty('--bg-portrait',cssUrl('chapters/'+CHAPTER_IMAGES[index]));el.style.setProperty('--bg-shade',String(visual.shade));el.style.setProperty('--bg-landscape-position',`center ${visual.focusY}%`);el.style.setProperty('--bg-mobile-position',`center ${visual.focusY}%`);}
-function refreshCaptainButtons(){const html=captainAvatar();document.querySelectorAll('.captain-home-button').forEach(button=>{button.innerHTML=html;button.setAttribute('aria-label',`Профиль капитана: ${captainTitle()}`);button.setAttribute('title',`Профиль капитана: ${captainTitle()}`);});}
+function setBackground(index=null){const el=document.querySelector('#landscape');const cssUrl=file=>"url('" + file + "')";if(index===null){el.style.setProperty('--bg-landscape',cssUrl(backgroundAsset('campWide')));el.style.setProperty('--bg-portrait',cssUrl(backgroundAsset('campPortrait')));el.style.setProperty('--bg-shade','.42');el.style.setProperty('--bg-landscape-position','center 46%');el.style.setProperty('--bg-mobile-position','center 58%');return;}const visual=chapterVisual(index);el.style.setProperty('--bg-landscape',cssUrl(chapterAsset(index,'wide')));el.style.setProperty('--bg-portrait',cssUrl(chapterAsset(index,'portrait')));el.style.setProperty('--bg-shade',String(visual.shade));el.style.setProperty('--bg-landscape-position','center '+visual.focusY+'%');el.style.setProperty('--bg-mobile-position','center '+visual.focusY+'%');}function refreshCaptainButtons(){const html=captainAvatar();document.querySelectorAll('.captain-home-button').forEach(button=>{button.innerHTML=html;button.setAttribute('aria-label',`Профиль капитана: ${captainTitle()}`);button.setAttribute('title',`Профиль капитана: ${captainTitle()}`);});}
 function save(){store.save();applyCosmetics();refreshCaptainButtons();document.querySelectorAll('[data-coins]').forEach(e=>{e.textContent=formatCoins(state().coins);e.closest('button')?.setAttribute('aria-label',`Монеты и подсказки: ${state().coins}`);e.closest('button')?.setAttribute('title',`${state().coins} монет`);});}
 function applyCosmetics(){document.body.classList.toggle('theme-seaglass',state().inventory.includes('letters-seaglass'));}
 function updateSettings(){applyCosmetics();document.body.classList.toggle('reduced-motion',!state().settings.motion);audio.updateMusic();}
@@ -290,7 +287,7 @@ async function boot(){try{analytics.init();analytics.send('session_start');analy
  const dataPromise=fetch('./levels.json').then(r=>{if(!r.ok)throw new Error('Level data unavailable');return r.json();});
  const configPromise=fetch('./live-config.json').then(r=>r.ok?r.json():{}).catch(()=>({}));
  const sdkPromise=platform.init();
- const bootImage=matchMedia('(max-width:700px)').matches?'./assets/UI/chapters/camp_intro.webp':'./assets/UI/wide-ai/camp_intro.webp';
+ const bootImage=chapterAsset(0,matchMedia('(max-width:700px)').matches?'portrait':'wide');
  const assetsPromise=Promise.allSettled([document.fonts.load('700 16px Golos'),document.fonts.load('900 32px Mulish'),new Promise(resolve=>{const image=new Image();image.onload=resolve;image.onerror=resolve;image.src=bootImage;})]);
  const [levelData,localConfig]=await Promise.all([dataPromise,configPromise]);levels=levelData;if(!Array.isArray(levels)||levels.length!==304)throw new Error('Invalid level catalog');
  await Promise.all([sdkPromise,Promise.race([assetsPromise,new Promise(r=>setTimeout(r,3500))])]);const normalized=normalizeConfig(localConfig),flags=await platform.flags(configDefaultFlags(normalized));liveConfig=applyRemoteFlags(normalized,flags);platform.configure(liveConfig);analytics.send('config_loaded',{version:liveConfig.version,remote:!!platform.sdk?.getFlags});updateSettings();home();await new Promise(requestAnimationFrame);platform.ready();analytics.send('boot_ready',{sdk:!!platform.sdk,cloud:platform.cloudReady});

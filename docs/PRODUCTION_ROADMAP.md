@@ -94,7 +94,7 @@
 ## P0 checkpoint — 2026-09-10
 
 - Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
-- Добавлены 31 unit-тест для core, config, economy, storage, commerce, platform и progression.
+- Добавлены 32 unit-теста для core, config, economy, storage, commerce, platform, progression и asset manifest.
 - Добавлены 5 Playwright smoke-тестов; они собирают dist и проверяют production preview, fallback navigation, persistence после reload и защиту от повторной награды при replay.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
@@ -133,3 +133,10 @@
 - Completion state transitions вынесены из main.js в src/progression.js без переноса SDK, analytics, DOM и companion side effects.
 - Campaign, daily и endless reward paths теперь имеют отдельные unit-тесты на first completion, повторный вызов, chapter bonus, daily cap и milestone idempotence.
 - Main.js остаётся orchestrator, а SaveStore.state остаётся единственным источником persistent state.
+
+## P1 asset manifest checkpoint — 2026-09-10
+
+- Введён src/asset-manifest.js для UI/shop, backgrounds, chapter/artifact, captain и companion path categories.
+- Runtime consumers используют manifest resolvers; chapter и artifact catalogs остаются authoritative источниками данных без дублирования.
+- Content validator импортирует manifest и проверяет canonical files, count contracts и companion poses; missing asset paths блокируют gate.
+- Local verification: npm run test:content, npm run test:unit и npm run test:e2e проходят после миграции.

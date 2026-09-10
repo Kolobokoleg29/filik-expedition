@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { ASSET_MANIFEST } from "../../../../src/asset-manifest.js";
 
 const root = process.cwd();
 const errors = [];
@@ -69,27 +70,43 @@ if (Array.isArray(endless)) {
 if (build && Array.isArray(campaign) && build.levels !== campaign.length) errors.push("build.json levels is " + build.levels + ", expected " + campaign.length);
 if (build && Array.isArray(endless) && build.endlessLevels !== endless.length) errors.push("build.json endlessLevels is " + build.endlessLevels + ", expected " + endless.length);
 
-const chapterSource = fs.existsSync(path.join(root, "src/chapter-images.js")) ? fs.readFileSync(path.join(root, "src/chapter-images.js"), "utf8") : "";
-const chapterImages = [...chapterSource.matchAll(/"([^"]+)"/g)].map((match) => match[1]);
-if (chapterImages.length !== 38) errors.push("Chapter image count is " + chapterImages.length + ", expected 38");
-for (const image of chapterImages) {
-  assertFile("assets/UI/chapters/" + image, "chapter image");
-  assertFile("assets/UI/wide-ai/" + image, "wide chapter image");
+const chapterEntries = Array.isArray(ASSET_MANIFEST.chapters) ? ASSET_MANIFEST.chapters : [];
+const chapterImages = chapterEntries.map((entry) => entry?.file);
+if (chapterEntries.length !== 38) errors.push("Manifest chapter count is " + chapterEntries.length + ", expected 38");
+if (chapterEntries.length) assertIdSet(chapterEntries, "Manifest chapter", 38);
+for (const chapter of chapterEntries) {
+  assertFile("assets/UI/" + chapter.portrait, "chapter image");
+  assertFile("assets/UI/" + chapter.wide, "wide chapter image");
 }
 
 const contentSource = fs.existsSync(path.join(root, "src/content.js")) ? fs.readFileSync(path.join(root, "src/content.js"), "utf8") : "";
 const companionIds = [...contentSource.matchAll(/"id"\s*:\s*"([^"]+)"/g)].map((match) => match[1]);
 if (companionIds.length !== 12) errors.push("Companion count is " + companionIds.length + ", expected 12");
+if ((ASSET_MANIFEST.companions?.poses ?? []).length !== 6) errors.push("Manifest companion pose count must be 6");
 for (const id of companionIds) {
-  for (const pose of ["calm", "expedition", "happy", "support", "surprise", "victory"]) {
+  for (const pose of ASSET_MANIFEST.companions?.poses ?? []) {
     assertFile("assets/UI/companions/" + id + "-" + pose + ".png", "companion pose");
   }
 }
 
-const artifactSource = fs.existsSync(path.join(root, "src/artifact-images.js")) ? fs.readFileSync(path.join(root, "src/artifact-images.js"), "utf8") : "";
-const artifactImages = [...artifactSource.matchAll(/^\s*\d+:'([^']+)'/gm)].map((match) => match[1]);
-if (artifactImages.length !== 38) errors.push("Artifact image count is " + artifactImages.length + ", expected 38");
-for (const image of artifactImages) assertFile("assets/UI/artifacts/" + image, "artifact image");
+const artifactFiles = ASSET_MANIFEST.artifacts?.files ?? {};
+const artifactImages = Object.values(artifactFiles);
+if (artifactImages.length !== 38) errors.push("Manifest artifact count is " + artifactImages.length + ", expected 38");
+for (const image of artifactImages) assertFile("assets/UI/" + ASSET_MANIFEST.artifacts.root + "/" + image, "artifact image");
+
+const captainFiles = ASSET_MANIFEST.captains?.files ?? {};
+if (Object.keys(captainFiles).length !== 8) errors.push("Manifest captain count is " + Object.keys(captainFiles).length + ", expected 8");
+for (const image of Object.values(captainFiles)) assertFile("assets/UI/" + image, "captain image");
+
+const manifestAssets = [
+  ...Object.values(ASSET_MANIFEST.ui?.icons ?? {}).map((file) => "assets/UI/" + file + ".png"),
+  ...Object.values(ASSET_MANIFEST.ui?.shop ?? {}).map((file) => "assets/UI/" + file + ".png"),
+  ...Object.values(ASSET_MANIFEST.backgrounds ?? {}).map((file) => "assets/UI/" + file),
+  ...chapterEntries.flatMap((entry) => ["assets/UI/" + entry.portrait, "assets/UI/" + entry.wide]),
+  ...artifactImages.map((file) => "assets/UI/" + ASSET_MANIFEST.artifacts.root + "/" + file),
+  ...Object.values(captainFiles).map((file) => "assets/UI/" + file)
+];
+for (const file of new Set(manifestAssets)) assertFile(file, "manifest asset");
 
 const runtimeFiles = [
   "index.html",

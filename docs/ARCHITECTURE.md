@@ -58,6 +58,7 @@ DOM is a projection of state. Do not store authoritative progress in DOM nodes, 
 - content.js: chapter and companion metadata.
 - levels.json and endless-levels.json: level catalogs.
 - chapter-images.js, chapter-visuals.js, artifact-images.js, backgrounds.js: stable mappings from content IDs to visual assets.
+- asset-manifest.js: canonical runtime asset categories and path resolvers; it aggregates authoritative content mappings without duplicating catalogs.
 - assets/: canonical shipped visual and font files.
 
 Catalog IDs, product IDs, leaderboard IDs, save keys and asset filenames are contracts. Changes require validator coverage and, when persistent or external, migration/compatibility reasoning.

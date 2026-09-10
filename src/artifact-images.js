@@ -1,5 +1,5 @@
 // Chapter-specific collectible art. All 38 chapters now have dedicated relic art.
-const ARTIFACT_IMAGES={
+export const ARTIFACT_IMAGES={
   1:'old_journal.png',
   2:'forest_compass.png',
   3:'forest_key.png',

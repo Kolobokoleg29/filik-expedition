@@ -1,2 +1,6 @@
-const W='camp_intro|ancient_forest|frozen_waterfall|expedition_finale|abandoned_fort|basalt_bridge|burning_desert|clockwork_hall|crystal_laboratory|floating_islands|flooded_grotto|forgotten_bazaar|forgotten_island|forgotten_valley|ice_labyrinth|library_of_fates|frost_ridge|gardens_of_winds|gates_of_abyss|glow_cave|gallery_of_ancestors|lonely_tower|lost_capital|lost_express|mirror_hall|mountain_pass|old_mine|sky_castle|snow_peak|star_observatory|stone_canyon|storm_coast|sun_tomb|throne_room|treasury_of_time|underground_citadel|volcano_valley|whispering_oasis';
-export const wideChapterDir=name=>W.includes(name.replace('.webp',''))?'wide-ai':'chapters-wide-hd';
+import { ASSET_MANIFEST } from "./asset-manifest.js";
+
+export const wideChapterDir = (name) => {
+  const chapter = ASSET_MANIFEST.chapters.find((entry) => entry.file === name);
+  return chapter?.wide?.split("/")[0] || "chapters-wide-hd";
+};

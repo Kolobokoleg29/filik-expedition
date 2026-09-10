@@ -18,14 +18,15 @@
 
 - `index.html` — HTML-контейнер, метаданные, загрузка стилей/модуля, счётчик Метрики.
 - `src/main.js` — главный orchestrator: загрузка данных, маршрутизация экранов, игровой цикл, обработчики событий, сохранение и интеграции.
-- src/core.js — нормализация слов, построение клеток, проверка слова, прогресс уровня, звёзды, daily/endless-утилиты.
-- src/progression.js — state transitions завершения campaign/daily/endless-режимов и idempotent rewards.
+- `src/core.js` — нормализация слов, построение клеток, проверка слова, прогресс уровня, звёзды, daily/endless-утилиты.
+- `src/progression.js` — state transitions завершения campaign/daily/endless-режимов и idempotent rewards.
 - `src/storage.js` — локальное состояние, санитизация, миграции и merge сохранений.
 - `src/platform.js` — адаптер SDK Яндекс Игр: cloud save, реклама, платежи, полноэкранный режим, gameplay API, лидерборды.
 - `src/config.js` — дефолтная конфигурация, нормализация и remote flags.
 - `src/economy.js`, `src/commerce.js` — экономика, магазин, рекламные награды, покупки и receipt ledger.
 - `src/meta-screens.js`, `src/victory-screen.js` — мета-экраны и экран завершения уровня.
-- `src/content.js`, `src/companions.js`, `src/captains.js`, `src/companion-dialogue.js`, `src/endless-meta.js` — главы, спутники, капитаны и бесконечный режим.
+- `src/content.js` — главы, спутники и chapter metadata.
+- `src/asset-manifest.js` — canonical runtime paths for UI, backgrounds, chapters, artifacts, captains and companions.
 - `src/style.css` — вся визуальная система и responsive-правила.
 - `levels.json` — 304 уровня кампании; `endless-levels.json` — 2000 уровней бесконечной экспедиции.
 - `live-config.json` — локальные значения remote-конфигурации: экономика, реклама, leaderboard и product IDs.
