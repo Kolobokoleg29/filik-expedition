@@ -119,7 +119,7 @@
 ## P0 performance-budget checkpoint — 2026-09-10
 
 - Добавлен budget checker для production dist: required outputs, initial JS/CSS/HTML, total dist и largest отдельного asset.
-- Текущий baseline: initial 258 KB, total 25,838 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
+- Текущий baseline: initial 259 KB, total 25,839 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
 
 ## P0 release-preflight checkpoint — 2026-09-10
 
@@ -140,3 +140,11 @@
 - Runtime consumers используют manifest resolvers; chapter и artifact catalogs остаются authoritative источниками данных без дублирования.
 - Content validator импортирует manifest и проверяет canonical files, count contracts и companion poses; missing asset paths блокируют gate.
 - Local verification: npm run test:content, npm run test:unit и npm run test:e2e проходят после миграции.
+
+## P1 UI/accessibility checkpoint — 2026-09-10
+
+- Игровое поле получает явную group-семантику, а игровой tip и pause shield — доступные status/live-контракты.
+- Модальные окна теперь задают labelled/description relationships, переводят фокус внутрь, удерживают Tab в пределах диалога и восстанавливают предыдущий фокус после закрытия.
+- Добавлены 3 Playwright accessibility regression-теста: mobile overflow, modal focus/semantics и ввод русской раскладки физическими keyboard-кодами.
+- Browser visual audit выполнен на fallback-режиме; screenshot evidence сохраняется только во временных test-results и не попадает в релиз.
+- Local verification: npx playwright test tests/e2e/accessibility.spec.mjs проходит полностью.
