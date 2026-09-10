@@ -741,3 +741,18 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
   #modal-root .modal[data-modal-type="goals"] .goal-progress .progress-track{grid-column:1/-1;grid-row:1}
   #modal-root .modal[data-modal-type="leaderboard"] .leader-row.self:after{right:8px}
 }
+
+/* Long-form screens keep orientation visible while the player browses the
+   route, diary or companions. */
+.scroll-page>.topbar{position:sticky;top:0;z-index:10;padding-block:10px;margin-bottom:2px;background:linear-gradient(180deg,rgba(20,36,33,.98) 0%,rgba(20,36,33,.88) 72%,rgba(20,36,33,0) 100%);backdrop-filter:blur(10px)}
+.scroll-page>.topbar:after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(215,183,123,.3),transparent);pointer-events:none}
+.chapter-card[data-current="true"]{border-color:var(--ui-border-active);box-shadow:inset 0 0 0 1px rgba(128,193,176,.24),0 12px 28px rgba(5,10,9,.3)}
+.chapter-card[data-current="true"] .chapter-info{background:linear-gradient(135deg,rgba(36,83,79,.24),rgba(18,27,25,.22))}
+.chapter-card[data-current="true"] .chapter-find{border-color:rgba(128,193,176,.4)}
+.chapter-card[data-current="true"] .level-node.current{box-shadow:0 0 0 3px rgba(128,193,176,.22),0 5px 13px rgba(5,10,9,.22)}
+@media(max-width:700px){
+  .scroll-page>.topbar{padding-block:8px}
+  .chapter-card[data-current="true"]{box-shadow:inset 0 0 0 1px rgba(128,193,176,.24),0 8px 20px rgba(5,10,9,.24)}
+}
+
+.chapter-progress-current{color:var(--ui-seaglass)!important;font-weight:700}

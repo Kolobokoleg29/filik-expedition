@@ -58,6 +58,16 @@ test("keeps the weekly CTA reachable on short mobile screens", async ({ page }) 
   expect(metrics.weeklyBottom).toBeLessThanOrEqual(667);
 });
 
+test("marks the current chapter while browsing the map", async ({ page }) => {
+  await page.goto("/")
+  await expect(page.locator(".game")).toBeVisible()
+  await page.locator("[data-action=home]").first().click()
+  await page.locator("[data-action=map]").first().click()
+  await expect(page.locator(".map-screen")).toBeVisible()
+  await expect(page.locator('.chapter-card[data-current="true"]')).toHaveCount(1)
+  await expect(page.locator('.chapter-card[data-current="true"] .level-node.current')).toHaveCount(1)
+})
+
 test("surfaces the current story from camp", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();
