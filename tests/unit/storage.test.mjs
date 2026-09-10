@@ -62,6 +62,14 @@ test("migrates a legacy currentLevel into completed campaign IDs", () => {
   assert.equal(migrated.stars[1], 2);
 });
 
+test("migrates legacy sound and music toggles independently", () => {
+  const migrated = migrateLegacy({
+    game_settings: { isMuted: true, isMusicMuted: false }
+  });
+  assert.equal(migrated.settings.sound, false);
+  assert.equal(migrated.settings.music, true);
+});
+
 test("spend is atomic for invalid and insufficient amounts", () => {
   const store = new SaveStore(new MemoryStorage());
   const before = store.state.coins;

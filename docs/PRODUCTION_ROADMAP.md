@@ -209,3 +209,9 @@
 - Добавлен scripts/check-gameplay-content.mjs и подключён в npm run test:content как второй слой после структурного content validator.
 - Gate проверяет все ID кампании и endless, границы и конфликты grid-клеток, canonical target/bonus words и их classification, согласованность difficulty metrics, перестановку endless-шаблонов и диапазон daily routes.
 - Local verification: 304 campaign, 2000 endless, 44,428 occupied cells, 13,293 target words, 28,662 bonus words и 2,000 unique endless templates проходят без ошибок.
+
+## P1 persistence migration checkpoint — 2026-09-10
+
+- Исправлена миграция legacy-настроек: isMusicMuted теперь обрабатывается независимо от общего isMuted и SFX mute.
+- Добавлен regression-тест для сохранения включённой музыки при отключённом звуке интерфейса.
+- Local verification: 6 storage-тестов и syntax gate проходят успешно.

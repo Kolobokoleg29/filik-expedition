@@ -90,7 +90,7 @@ export function migrateLegacy(data={}){
   for(const [k,v] of Object.entries(ownObject(p.stars)))if(+k>=0&&+k<304)s.stars[+k+1]=clampInt(v,0,3);
   s.hearts=clampInt(pets.hearts);s.pets=Array.isArray(pets.unlocked)?pets.unlocked:[];s.activePet=pets.activeId||null;s.petLevels=ownObject(pets.levels);
   s.adsRemoved=!!(data.game_purchases?.adsRemoved||data.purchases?.adsRemoved||data.adsRemoved);
-  if(settings.isMuted!==undefined||settings.isSfxMuted!==undefined)s.settings.sound=!(settings.isMuted||settings.isSfxMuted);if(settings.isMusicMuted!==undefined)s.settings.music=!(settings.isMuted||settings.isMusicMuted);
+  if(settings.isMuted!==undefined||settings.isSfxMuted!==undefined)s.settings.sound=!(settings.isMuted||settings.isSfxMuted);if(settings.isMusicMuted!==undefined)s.settings.music=!settings.isMusicMuted;
   s.updatedAt=clampInt(data.lastSaveTime||0,0,9e15);return sanitizeState(s);
 }
 const normalizeAccountId=v=>typeof v==='string'&&v.length>0&&v.length<=256?v:'';
