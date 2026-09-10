@@ -69,6 +69,18 @@ test("marks the current chapter while browsing the map", async ({ page }) => {
   await expect(page.locator('.chapter-card[data-current="true"] .level-node.current')).toHaveCount(1)
 })
 
+test("keeps the next route visible in the diary", async ({ page }) => {
+  await page.goto("/")
+  await expect(page.locator(".game")).toBeVisible()
+  await page.locator("[data-action=home]").first().click()
+  await page.locator("[data-action=album]").first().click()
+  await expect(page.locator(".album-screen")).toBeVisible()
+  await expect(page.locator('.collection-card[data-current="true"]')).toHaveCount(1)
+  await expect(page.locator('.collection-card[data-current="true"] .small')).toContainText("Ваш маршрут")
+  await page.locator('.collection-card[data-current="true"]').click()
+  await expect(page.locator(".story-modal-hero")).toBeVisible()
+})
+
 test("surfaces the current story from camp", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();
