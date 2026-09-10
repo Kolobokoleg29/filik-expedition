@@ -23,6 +23,33 @@ test("exposes labelled game controls without mobile overflow", async ({ page }) 
   expect(metrics.pauseRole).toBe("status");
 });
 
+test("wraps goals categories inside the mobile modal", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await page.locator("[data-action=home]").first().click();
+  await expect(page.locator(".home")).toBeVisible();
+  await page.locator("[data-action=goals]").first().click();
+  await expect(page.locator(".goal-category-tabs")).toBeVisible();
+
+  const metrics = await page.evaluate(() => {
+    const tabs = document.querySelector(".goal-category-tabs");
+    const bounds = tabs?.getBoundingClientRect();
+    const overflowing = Array.from(tabs?.querySelectorAll("button") || []).filter((button) => {
+      const rect = button.getBoundingClientRect();
+      return rect.left < (bounds?.left || 0) - 1 || rect.right > (bounds?.right || 0) + 1;
+    });
+    return {
+      clientWidth: tabs?.clientWidth || 0,
+      scrollWidth: tabs?.scrollWidth || 0,
+      overflowing: overflowing.length
+    };
+  });
+
+  expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth + 1);
+  expect(metrics.overflowing).toBe(0);
+});
+
 test("keeps modal semantics and focus contained", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();
