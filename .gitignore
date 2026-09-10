@@ -1,0 +1,24 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+
+# Dependencies and generated output
+node_modules/
+dist/
+build/
+coverage/
+*.log
+
+# Local development artifacts
+.env
+.env.*
+!.env.example
+*.local
+
+# Temporary screenshots / exports
+screenshots/
+artifacts/
+

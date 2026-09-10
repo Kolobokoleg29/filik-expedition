@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "weekly": {"steps": 7, "coins": 90, "hearts": 3},
+  "ads": {"interstitialCooldownMs": 180000, "earlyLevelSkip": 2},
+  "rewarded": {"coins": 30, "coinDailyCap": 2, "hintDailyCap": 3, "doubleDailyCap": 1},
+  "economy": {
+    "campaignLevelCoins": 12,
+    "campaignChapterCoins": 24,
+    "campaignLevelHearts": 1,
+    "campaignChapterHearts": 2,
+    "dailyCoins": 50,
+    "dailyHearts": 3,
+    "bonusWordCoins": 2,
+    "bonusChestEvery": 5,
+    "bonusChestCoins": 10,
+    "bonusRadarCost": 30,
+    "letterHintCost": 25,
+    "wordHintCost": 60,
+    "endlessDailyRewardedStages": 5,
+    "endlessCoins": 12,
+    "endlessHeartsEvery": 10
+  },
+  "companions": {"upgradeCosts": [10, 20, 30, 50]},
+  "leaderboards": {"endless": "expeditionEndless"},
+  "catalog": {
+    "no_ads": "expedition_no_ads",
+    "starter_explorer": "expedition_starter",
+    "coins_handful": "expedition_coins_500",
+    "coins_pouch": "expedition_coins_1200",
+    "coins_satchel": "expedition_coins_3000",
+    "coins_chest": "expedition_coins_7500",
+    "coins_expedition": "expedition_coins_18000"
+  },
+  "commerceEnabled": true,
+  "commerceClientMode": "client-v1"
+}
