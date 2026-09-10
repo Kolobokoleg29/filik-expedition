@@ -99,3 +99,15 @@
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
 - Local verification: npm run check:all проходит.
+
+## P1 architecture checkpoint — 2026-09-10
+
+- Добавлен docs/ARCHITECTURE.md с ownership boundaries для domain, platform, presentation, content/assets.
+- Зафиксированы state contract, safe change seams, runtime sequence и required test layers.
+- Следующий кодовый P1-шаг: покрыть platform/cloud pause flows и расширить validator на runtime asset references до начала крупных extraction-изменений.
+
+## P1 platform safety checkpoint — 2026-09-10
+
+- Добавлены platform unit-тесты для GameplayAPI pause aggregation, cloud-empty fallback, leaderboard score bounds и rewarded callback.
+- Timeout helpers в platform.js теперь очищают timers после resolve/reject; unit suite не удерживает процесс искусственными 3.5-секундными таймерами.
+- Повторный full gate обязателен после следующего изменения в state, platform или route flow.

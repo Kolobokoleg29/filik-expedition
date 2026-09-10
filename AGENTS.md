@@ -107,3 +107,9 @@
 - Run npm run test:e2e for a fresh production-preview browser smoke on desktop and mobile.
 - Run npm run check:all before a release candidate.
 - Local analytics is disabled by default; add ?analytics=1 only when explicitly testing the external Metrika integration.
+
+## Architecture reference
+
+- Read docs/ARCHITECTURE.md before moving logic between domain, platform, presentation, or content modules.
+- Persistent state changes require freshState, sanitizeState, merge/migration reasoning, a focused unit test, and bounded fields.
+- DOM and modal markup are projections; SaveStore.state remains authoritative.

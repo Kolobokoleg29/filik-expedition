@@ -1,8 +1,7 @@
 import {SAVE_KEY,migrateLegacy} from './storage.js';
 import {applyLanguage,readSdkLang} from './i18n.js';
-const TIMEOUT=Symbol('timeout');
-const timeout=(promise,ms)=>Promise.race([Promise.resolve(promise),new Promise(resolve=>setTimeout(()=>resolve(null),ms))]);
-const settled=async(promise,ms)=>{const value=await Promise.race([Promise.resolve(promise),new Promise(resolve=>setTimeout(()=>resolve(TIMEOUT),ms))]);return value===TIMEOUT?{ok:false,value:null}:{ok:true,value};};
+const timeout=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve(null);},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve(value);},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
+const settled=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve({ok:false,value:null});},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve({ok:true,value});},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
 export class YandexPlatform {
   constructor(store,host=window,options={}){this.store=store;this.host=host;this.sdk=null;this.player=null;this.paymentsApi=null;this.cloudReady=false;this.readySent=false;this.readyWanted=false;this.wanted=false;this.playing=false;this.reasons=new Set();this.listeners=[];this.adBusy=false;this.lastAd=Date.now();this.lastCloud=0;this.dirty=false;this.timer=null;this.syncing=false;this.cloudRequestId=0;this.accountSelectionOpen=false;this.language='ru';this.adCooldownMs=180000;this.adOpenTimeout=options.adOpenTimeout??15000;this.adSessionTimeout=options.adSessionTimeout??120000;this.lastStatus=null;this.onStatus=()=>{};this.onAccountSelection=()=>{};store.onChange=()=>this.queueSave();}
   debugMode(){return /(?:^|[?&])debug-mode(?:=|&|$)/.test(this.host.location?.search||'');}
