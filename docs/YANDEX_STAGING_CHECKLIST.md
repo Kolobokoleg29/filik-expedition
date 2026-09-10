@@ -124,3 +124,11 @@ Staging считается пройденным только когда все �
 - [Игровые данные и аккаунт игрока](https://yandex.ru/dev/games/doc/ru/sdk/sdk-player)
 - [Покупки](https://yandex.ru/dev/games/doc/ru/sdk/sdk-purchases)
 - [Таблица лидеров](https://yandex.ru/dev/games/doc/ru/sdk/sdk-leaderboard)
+
+
+## Локальный SDK dev-proxy
+
+Перед draft-прогоном использовать `docs/YANDEX_SDK_LOCAL_TESTING.md` и команду `npm run sdk:dev`. Она запускает официальный `@yandex-games/sdk-dev-proxy@0.0.2` в dev-режиме, где mock catalog читается из временной копии `dist/purchases-catalog.json`. Этот режим не доказывает работу настоящей платформы и не должен попадать в production ZIP.
+
+
+Подтверждённый локальный прогон 2026-09-10: dev-proxy v0.0.2 отдал SDK и каталог с HTTP 200, показал все 7 товаров, purchase success/cancel сохранили ожидаемую идемпотентность, rewarded выдал одну награду после timer + close-cross, console/page errors отсутствовали.

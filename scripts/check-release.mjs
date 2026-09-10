@@ -67,6 +67,7 @@ if (liveConfig) {
 
 const distIndex = readText("dist/index.html");
 if (/localhost|127\.0\.0\.1/i.test(distIndex)) errors.push("Production index.html contains a local development host");
+if (fs.existsSync(path.join(root, "dist/purchases-catalog.json"))) errors.push("Production dist must not contain the local SDK purchases catalog");
 const platformSource = readText("src/platform.js");
 if (!/sdk\.games\.s3\.yandex\.net\/sdk\.js/.test(platformSource)) errors.push("Yandex SDK official source is not configured");
 if (!/YaGames\.init\s*\(/.test(platformSource)) errors.push("Yandex SDK init contract is missing");

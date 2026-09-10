@@ -342,3 +342,26 @@
 - Чек-лист разделяет доказательства локального кандидата и подтверждения настоящего SDK: Loading/Gameplay API, аккаунтная изоляция cloud save, callback-логика рекламы, восстановление receipt и лидерборд.
 - Зафиксировано правило: `Invalid archive` из интерфейса кабинета не считается блокером по решению владельца, но и не заменяется локальным mock SDK; финальная готовность требует реального staging-прогона и evidence по каждой обязательной строке.
 - Следующий release-критерий — заполнить staging-матрицу на проверенном архиве после осознанного решения по расхождению версии кабинета и репозитория.
+
+
+## P1 SDK lifecycle regression checkpoint — 2026-09-10
+
+- Добавлен `tests/e2e/sdk.spec.mjs`: mock SDK фиксирует единичный `LoadingAPI.ready()`, старт gameplay при входе на уровень, остановку при модальном окне и возобновление после его закрытия.
+- Сценарий подтверждает порядок вызовов в браузерном runtime, но не засчитывает его вместо ручной проверки настоящего Yandex Games draft.
+- Следующий release-критерий не изменился: заполнить staging-матрицу реальными cloud save, рекламой, покупками, лидербордом и console/resource evidence.
+
+
+## P1 official SDK dev-proxy checkpoint — 2026-09-10
+
+- Найден официальный `@yandex-games/sdk-dev-proxy@0.0.2`; подключена команда `npm run sdk:dev` для HTTPS localhost dev-режима с mock SDK.
+- Добавлены `purchases-catalog.json`, `scripts/check-purchases-catalog.mjs` и `scripts/prepare-sdk-dev.mjs`: семь product ID синхронизированы с `live-config.json`, fixture копируется только во временный `dist` перед локальным прокси.
+- Release preflight запрещает `dist/purchases-catalog.json`, поэтому dev-мок не может случайно попасть в production ZIP.
+- Первый фактический прогон прокси выявил 404 каталога при запуске с чистым `dist`; после добавления dev-only копирования требуется повторный browser-прогон с каталогом, покупками и callback-ветками.
+
+
+## P1 official SDK dev-proxy verification checkpoint — 2026-09-10
+
+- Повторный прогон через официальный dev-proxy завершён: `/sdk.js` и `/purchases-catalog.json` — HTTP 200, boot и магазин без console/page errors.
+- Проверены 7 offers, mock purchase success (500 монет), mock cancel (баланс не меняется) и rewarded callback (ровно +30 монет после timer + close-cross).
+- Зафиксирована особенность mock-рекламы: до окончания таймера крест вызывает cancel без награды; это ожидаемая ветка тестовой заглушки, а не production-правило рекламы.
+- Локальная SDK-среда теперь имеет воспроизводимую команду и evidence; real draft-прогон cloud save, авторизации, платежей и leaderboard остаётся обязательным.

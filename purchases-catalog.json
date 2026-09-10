@@ -1,0 +1,58 @@
+[
+  {
+    "id": "expedition_no_ads",
+    "title": "Убрать рекламу",
+    "description": "Отключает межуровневую рекламу навсегда.",
+    "price": "149 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "149"
+  },
+  {
+    "id": "expedition_starter",
+    "title": "Набор исследователя",
+    "description": "300 монет, 3 бесплатные подсказки и Сова-эрудит.",
+    "price": "199 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "199"
+  },
+  {
+    "id": "expedition_coins_500",
+    "title": "Пригоршня монет",
+    "description": "500 монет для подсказок и находок.",
+    "price": "79 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "79"
+  },
+  {
+    "id": "expedition_coins_1200",
+    "title": "Мешочек монет",
+    "description": "1440 монет: 1200 базовых и бонус экспедиции.",
+    "price": "159 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "159"
+  },
+  {
+    "id": "expedition_coins_3000",
+    "title": "Сумка монет",
+    "description": "3750 монет: 3000 базовых и бонус экспедиции.",
+    "price": "349 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "349"
+  },
+  {
+    "id": "expedition_coins_7500",
+    "title": "Сундук монет",
+    "description": "10125 монет: 7500 базовых и большой бонус.",
+    "price": "699 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "699"
+  },
+  {
+    "id": "expedition_coins_18000",
+    "title": "Экспедиционный запас",
+    "description": "27000 монет: 18000 базовых и максимальный бонус.",
+    "price": "1299 RUB",
+    "priceCurrencyCode": "RUB",
+    "priceValue": "1299"
+  }
+]
