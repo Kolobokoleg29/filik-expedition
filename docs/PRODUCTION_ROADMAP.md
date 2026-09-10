@@ -172,3 +172,9 @@
 - Добавлен Playwright regression на ширину и границы category tabs в mobile goals modal.
 - Добавлены flow regression-тесты для запуска daily route и корректного двухступенчатого Escape в weekly → leaderboard nested modal.
 - Для коротких mobile viewport home теперь вертикально прокручивается: weekly CTA и подпись не теряются за нижней границей экрана.
+
+## P1 account refresh checkpoint — 2026-09-10
+
+- При re-auth/account selection refreshPlayer очищает account-bound player и payments caches и временно сбрасывает cloudReady.
+- Ошибка получения нового cloud player теперь остаётся fail-closed, чтобы старое cloud/payment состояние не использовалось для другого аккаунта; локальный fallback сохраняется.
+- Добавлены reliability tests для успешного cache reset и неуспешного account refresh.

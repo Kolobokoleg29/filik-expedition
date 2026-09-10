@@ -53,7 +53,7 @@ export class YandexPlatform {
     const requestId=++this.cloudRequestId;
     this.status('cloud','loading');
     try{
-      if(refreshPlayer)this.player=null;
+      if(refreshPlayer){this.player=null;this.paymentsApi=null;this.cloudReady=false;}
       const player=this.player||await timeout(this.sdk.getPlayer({scopes:false}),3500);
       if(requestId!==this.cloudRequestId)return false;
       this.player=player;

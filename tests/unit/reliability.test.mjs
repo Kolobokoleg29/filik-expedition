@@ -127,3 +127,31 @@ test("times out an ad that never opens without leaving gameplay paused", async (
   assert.equal(platform.adBusy, false);
   assert.equal(platform.paused, false);
 });
+
+test("clears account-bound caches when refreshing the cloud player", async () => {
+  const platform = new YandexPlatform(makeStore(), makeHost());
+  const previousPlayer = { id: "previous" };
+  const nextPlayer = { async getData() { return null; } };
+  platform.player = previousPlayer;
+  platform.paymentsApi = { id: "previous-payments" };
+  platform.cloudReady = true;
+  platform.sdk = { async getPlayer() { return nextPlayer; } };
+
+  assert.equal(await platform.loadCloud({ refreshPlayer: true }), true);
+  assert.equal(platform.player, nextPlayer);
+  assert.equal(platform.paymentsApi, null);
+  assert.equal(platform.cloudReady, true);
+});
+
+test("fails closed when refreshing the cloud player fails", async () => {
+  const platform = new YandexPlatform(makeStore(), makeHost());
+  platform.player = { id: "previous" };
+  platform.paymentsApi = { id: "previous-payments" };
+  platform.cloudReady = true;
+  platform.sdk = { async getPlayer() { throw new Error("account unavailable"); } };
+
+  assert.equal(await platform.loadCloud({ refreshPlayer: true }), false);
+  assert.equal(platform.player, null);
+  assert.equal(platform.paymentsApi, null);
+  assert.equal(platform.cloudReady, false);
+});
