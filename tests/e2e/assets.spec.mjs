@@ -22,6 +22,7 @@ test("loads all lazy screen assets on desktop and mobile", async ({ page }) => {
       const screen = page.locator(selector);
       await expect(screen).toBeVisible();
       if (action === "map") await expect(screen.locator(".map-route-compass")).toHaveJSProperty("naturalWidth", 384);
+      if (action === "map") expect(await screen.locator(".map-node-art").count()).toBe(304);
       await screen.evaluate((element) => element.scrollTo(0, element.scrollHeight));
       await expect.poll(
         () => screen.locator("img").evaluateAll((images) => images.every((image) => image.complete && image.naturalWidth > 0)),
