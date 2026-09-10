@@ -70,7 +70,7 @@ test("resolves rewarded ads only after the SDK callback reports a reward", async
   assert.equal(platform.adBusy, false);
   assert.equal(platform.paused, false);
 });
-test("uses the official SDK URL outside Yandex hosting", async () => {
+test("keeps external hosting in fallback mode without loading a service URL", async () => {
   let scriptSource = "";
   const host = makeHost("", "example.com", "https:");
   host.document = {
@@ -78,7 +78,7 @@ test("uses the official SDK URL outside Yandex hosting", async () => {
     head: { append(script) { scriptSource = script.src; host.YaGames = { async init() { return null; } }; script.onload?.(); } }
   };
   await new YandexPlatform(makeStore(), host).init();
-  assert.equal(scriptSource, "https://sdk.games.s3.yandex.net/sdk.js");
+  assert.equal(scriptSource, "");
 });
 
 test("uses the relative SDK proxy on Yandex hosting", async () => {

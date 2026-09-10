@@ -97,7 +97,7 @@
 - Добавлены 32 unit-теста для core, config, economy, storage, commerce, platform, progression и asset manifest.
 - Добавлены 5 Playwright smoke-тестов; они собирают dist и проверяют production preview, fallback navigation, persistence после reload и защиту от повторной награды при replay.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
-- Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
+- Production archive не загружает внешний Metrika-скрипт; встроенные метрики Yandex Games остаются источником платформенной аналитики, а локальный event transport не блокирует игру.
 - Local verification: npm run check:all проходит.
 
 ## P1 architecture checkpoint — 2026-09-10
@@ -373,3 +373,10 @@
 - `npm run test:sdk:dev` сам собирает dev-кандидат, поднимает официальный `@yandex-games/sdk-dev-proxy@0.0.2`, ждёт `/sdk.js`, выполняет два браузерных сценария и завершает дерево proxy-процессов.
 - Автоматически подтверждены catalog HTTP 200, 5 coin packs, 2 real offers, покупка success/cancel, pending UX и rewarded callback без console/page errors.
 - Этот gate воспроизводит локальную платформенную интеграцию; staging-верификация cloud save, аккаунтов, реальной рекламы, платежей и leaderboard ещё не закрыта.
+## P1 external URL and release warning checkpoint — 2026-09-10
+
+- Убрана абсолютная ссылка на SDK-хранилище из production runtime: на Yandex Games и в официальном HTTPS dev-proxy SDK загружается только через относительный /sdk.js.
+- Необязательная загрузка внешнего Metrika-скрипта удалена из production runtime; встроенная аналитика Yandex Games не требует отдельного URL.
+- Release preflight сканирует dist и отклоняет любой абсолютный http(s)-адрес, чтобы замечание о сервисном хранилище ловилось до загрузки архива.
+- localStorage сохранён только как локальный fallback/cache для автономной игры; при доступном SDK облачное сохранение остаётся обязательным источником для аккаунтных данных и покупок.
+- После исправления: npm run check, npm run test:sdk:dev (2/2) и npm run release:package проходят; новый архив собран для повторной загрузки в черновик.

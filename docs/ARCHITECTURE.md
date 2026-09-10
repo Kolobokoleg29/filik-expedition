@@ -37,7 +37,7 @@ These modules own asynchronous external systems:
 - data-loader.js: bounded JSON requests with timeout, transient retry and safe error propagation.
 - platform.js: Yandex SDK lifecycle, cloud save, ads, payments bridge, leaderboards, pause/resume and server time.
 - commerce.js: catalog, purchase validation, receipt ledger, consume and recovery.
-- analytics.js: Metrika transport and local/test suppression.
+- analytics.js: optional event transport; production archive does not inject a third-party analytics script.
 
 Platform failures are expected. Every SDK-dependent operation needs a bounded timeout or safe fallback and must not become the source of truth for local gameplay state.
 

@@ -46,6 +46,10 @@
 
 ## Граница production
 
+Production preflight также отклоняет абсолютные http(s)-URL в dist: production использует относительный /sdk.js и не встраивает внешний Metrika-loader.
+
+
+
 `purchases-catalog.json` — локальная fixture dev-proxy. `prepare-sdk-dev.mjs` копирует её только после сборки для текущего локального процесса. `check-release.mjs` специально завершает preflight с ошибкой, если файл оказался в `dist`; production ZIP не должен содержать локальный mock-каталог.
 
 

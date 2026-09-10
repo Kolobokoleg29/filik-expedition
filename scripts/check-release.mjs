@@ -69,10 +69,27 @@ const distIndex = readText("dist/index.html");
 if (/localhost|127\.0\.0\.1/i.test(distIndex)) errors.push("Production index.html contains a local development host");
 if (fs.existsSync(path.join(root, "dist/purchases-catalog.json"))) errors.push("Production dist must not contain the local SDK purchases catalog");
 const platformSource = readText("src/platform.js");
-if (!/sdk\.games\.s3\.yandex\.net\/sdk\.js/.test(platformSource)) errors.push("Yandex SDK official source is not configured");
+if (!/['"]\/sdk\.js['"]/.test(platformSource)) errors.push("Yandex SDK must be loaded from the relative /sdk.js path on Yandex hosting");
+if (/sdk\.games\.s3\.yandex\.net\/sdk\.js/i.test(platformSource)) errors.push("Production runtime must not contain an absolute Yandex S3 SDK URL");
 if (!/YaGames\.init\s*\(/.test(platformSource)) errors.push("Yandex SDK init contract is missing");
 if (!/LoadingAPI\?\.ready\s*\(\)/.test(platformSource)) errors.push("Yandex LoadingAPI.ready contract is missing");
 
+const externalUrlPattern=/https?:\/\/[^\s"''<>]+/gi;
+const releaseFiles=[];
+const collectReleaseFiles=(directory)=>{
+  if(!fs.existsSync(directory))return;
+  for(const entry of fs.readdirSync(directory,{withFileTypes:true})){
+    const file=path.join(directory,entry.name);
+    if(entry.isDirectory())collectReleaseFiles(file);
+    else if(/\.(?:html?|js|json|css)$/i.test(entry.name))releaseFiles.push(file);
+  }
+};
+collectReleaseFiles(path.join(root,"dist"));
+for(const file of releaseFiles){
+  const text=fs.readFileSync(file,"utf8");
+  const urls=[...text.matchAll(externalUrlPattern)].map(match=>match[0]);
+  if(urls.length)errors.push("Production dist contains an absolute external URL in "+path.relative(root,file)+": "+[...new Set(urls)].join(", "));
+}
 if (errors.length) {
   console.error("Release preflight failed:");
   for (const error of errors) console.error("- " + error);

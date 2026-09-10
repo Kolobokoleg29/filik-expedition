@@ -51,13 +51,18 @@ function stopTree(child) {
   if (process.platform === "win32") {
     spawn("taskkill", ["/pid", String(child.pid), "/t", "/f"], { stdio: "ignore", windowsHide: true });
   } else {
-    child.kill("SIGTERM");
+    try {
+      process.kill(-child.pid, "SIGTERM");
+    } catch {
+      child.kill("SIGTERM");
+    }
   }
 }
 
 const proxy = spawnCommand(npm, ["run", "sdk:dev"], {
   env: { ...process.env },
-  stdio: "inherit"
+  stdio: "inherit",
+  detached: process.platform !== "win32"
 });
 
 try {
