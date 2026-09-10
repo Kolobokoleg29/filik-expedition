@@ -120,3 +120,9 @@
 
 - Добавлен budget checker для production dist: required outputs, initial JS/CSS/HTML, total dist и largest отдельного asset.
 - Текущий baseline: initial 257 KB, total 25,837 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
+
+## P0 release-preflight checkpoint — 2026-09-10
+
+- Добавлен локальный release preflight: сверка package/build версии и content counts, обязательные dist outputs, production config normalization, product/leaderboard IDs и базовый secret scan.
+- AGENTS.md синхронизирован с фактическим npm/Vite/Playwright/CI-процессом.
+- Local verification: npm run check:all проходит после добавления preflight.

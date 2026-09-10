@@ -9,9 +9,9 @@
 ## Стек и запуск
 
 - Чистый HTML/CSS/JavaScript ES modules; TypeScript, React, Phaser и Three.js не используются.
-- Сборщик и менеджер зависимостей отсутствуют. Не добавлять `npm install` или новый build pipeline без отдельного решения.
+- Production toolchain: npm, Vite, Playwright и Node test runner; зависимости фиксируются в package-lock.json и устанавливаются через npm ci.
 - Игра должна запускаться через HTTP(S)-сервер, а не через `file://`: при старте загружаются JSON через `fetch()`.
-- Для локальной проверки можно использовать любой статический сервер из корня проекта, например `python -m http.server 8000` или аналогичный сервер для Node.
+- Для локальной проверки использовать npm run dev, npm run preview или production quality gate npm run check:all.
 - Точка входа: `index.html` → `src/main.js`.
 
 ## Структура
@@ -72,7 +72,7 @@
 6. desktop и mobile viewport, включая экран игры и модальные окна;
 7. консоль браузера на ошибки и отсутствующие ассеты.
 
-Автоматических тестов, линтера и CI пока нет — это известное ограничение проекта, а не причина пропускать ручную smoke-проверку.
+Автоматические проверки и CI уже добавлены: syntax, content, unit, production build, budgets, release preflight и Playwright fallback smoke; ручная SDK-проверка всё ещё обязательна перед публикацией.
 
 ## Git workflow
 
@@ -103,7 +103,7 @@
 ## Quality gate
 
 - Install with npm ci.
-- Run npm run check for syntax, content, unit tests, and production build.
+- Run npm run check for syntax, content, unit tests, production build, budgets, and release preflight.
 - Run npm run test:e2e for a fresh production-preview browser smoke on desktop and mobile.
 - Run npm run check:all before a release candidate.
 - Local analytics is disabled by default; add ?analytics=1 only when explicitly testing the external Metrika integration.
