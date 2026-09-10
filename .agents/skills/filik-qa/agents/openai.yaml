@@ -1,0 +1,4 @@
+interface:
+  display_name: "Filik QA"
+  short_description: "Smoke-test gameplay and responsive UI"
+  default_prompt: "Use $filik-qa to run a focused browser regression check for the changed flow."

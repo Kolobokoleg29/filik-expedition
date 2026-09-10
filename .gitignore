@@ -22,3 +22,9 @@ coverage/
 screenshots/
 artifacts/
 
+
+# Codex / test artifacts
+.vitest/
+.playwright/
+test-results/
+playwright-report/

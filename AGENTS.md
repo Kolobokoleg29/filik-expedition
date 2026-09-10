@@ -88,3 +88,14 @@
 - Для полноценной проверки SDK, cloud save, рекламы, платежей и leaderboard нужен staging/production-контур Яндекс Игр.
 - Для подключения GitHub требуется URL целевого репозитория и доступ к нему; локальная подготовка Git не заменяет эту внешнюю авторизацию.
 
+
+## Skill routing and context efficiency
+
+- Project-scoped skills are in .agents/skills/ and should be loaded only for the matching task.
+- filik-gameplay covers gameplay rules, progress, rewards, persistence, and economy.
+- filik-content covers level catalogs, chapters, assets, and content validation.
+- filik-qa covers browser smoke/regression and responsive checks.
+- filik-yandex-release covers Yandex Games SDK, cloud/ads/payments/leaderboards, and release preflight.
+- Use one main agent for normal tasks. Delegate only large independent subtasks with explicit file ownership; do not start review/fix/re-review chains without a new signal.
+- Batch independent read-only checks. Do not reread unchanged large JSON or repeat successful tests without changed inputs.
+- Do not add a skill or plugin when an existing one covers the task; new rules should reduce repeated decisions rather than duplicate this document.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Filik Gameplay"
+  short_description: "Safely change gameplay and progress rules"
+  default_prompt: "Use $filik-gameplay to change a gameplay rule and verify its state transitions."

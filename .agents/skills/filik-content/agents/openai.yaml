@@ -1,0 +1,4 @@
+interface:
+  display_name: "Filik Content"
+  short_description: "Validate levels, JSON, and game assets"
+  default_prompt: "Use $filik-content to update the level catalog and validate all affected content."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Filik Yandex Release"
+  short_description: "Protect SDK integrations and release checks"
+  default_prompt: "Use $filik-yandex-release to review a Yandex integration change and run the release preflight."
