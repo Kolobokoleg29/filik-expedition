@@ -5,6 +5,12 @@ const root = process.cwd();
 const file = path.join(root, "docs/yandex-draft.json");
 const errors = [];
 let draft = null;
+let packageJson = null;
+try {
+  packageJson = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+} catch (error) {
+  errors.push("Unable to read package.json: " + error.message);
+}
 try {
   draft = JSON.parse(fs.readFileSync(file, "utf8"));
 } catch (error) {
@@ -18,6 +24,7 @@ const range = (key, min, max) => {
 };
 if (draft) {
   if (!/^\d+\.\d+\.\d+$/.test(String(draft.version || ""))) errors.push("version must be strict semver");
+  if (packageJson && draft.version !== packageJson.version) errors.push("draft version " + draft.version + " differs from package.json " + packageJson.version);
   if (!Array.isArray(draft.platforms) || !draft.platforms.includes("mobile") || !draft.platforms.includes("desktop")) errors.push("platforms must include desktop and mobile");
   if (draft.orientation !== "portrait") errors.push("orientation must remain portrait for the current launch plan");
   if (JSON.stringify(draft.languages) !== JSON.stringify(["ru"])) errors.push("languages must list only the currently implemented Russian localization");
