@@ -57,3 +57,36 @@ test("keeps the weekly CTA reachable on short mobile screens", async ({ page }) 
   expect(metrics.weeklyTop).toBeGreaterThanOrEqual(0);
   expect(metrics.weeklyBottom).toBeLessThanOrEqual(667);
 });
+
+test("surfaces the current story from camp", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await page.locator("[data-action=home]").first().click();
+  await expect(page.locator(".home")).toBeVisible();
+  await expect(page.locator(".story-teaser")).toContainText("Запись из дневника");
+  await page.locator(".story-teaser [data-action=story]").click();
+  await expect(page.locator(".story-modal-hero")).toBeVisible();
+  await expect(page.locator(".story-copy")).toContainText("На чердаке");
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".home")).toBeVisible();
+});
+
+test("introduces a new chapter without requiring a companion", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("expedition_rebus_v5", JSON.stringify({
+      version: 5,
+      onboardingSeen: true,
+      completed: Array.from({ length: 8 }, (_, index) => index + 1),
+      lastLevel: 8,
+      pets: [],
+      activePet: null
+    }));
+  });
+  await page.goto("/");
+  await expect(page.locator(".home")).toBeVisible();
+  await page.locator("[data-action=continue]").click();
+  await expect(page.locator(".chapter-intro-modal")).toBeVisible();
+  await expect(page.locator(".chapter-intro-modal")).toContainText("Горный Перевал");
+  await expect(page.locator(".chapter-story-copy")).toContainText("перевале");
+  await expect(page.locator(".chapter-intro-modal .companion-presence")).toHaveCount(0);
+});

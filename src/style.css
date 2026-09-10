@@ -662,3 +662,30 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
 @media(max-width:700px){.map-title-row{align-items:flex-start;gap:10px;margin-top:20px}.map-route-compass{width:70px;height:70px;margin-top:2px}}
 
 .level-node{position:relative;display:grid;place-items:center;overflow:visible}.level-node .map-node-art{position:absolute;width:42px;height:42px;object-fit:contain;inset:50% auto auto 50%;transform:translate(-50%,-50%);opacity:.98;z-index:0;filter:drop-shadow(0 4px 7px #09060555)}.map-node-number{position:absolute;right:4px;bottom:3px;z-index:2;min-width:16px;padding:1px 3px;border-radius:6px;background:#171411b8;color:#f4ead8;font:700 9px/1 Mulish,Golos,sans-serif;text-align:center}.level-node.current{background:#326b63;color:var(--paper)}.level-node.done{background:#315b4b;color:#d2efd8}.level-node .level-stars{position:absolute;left:4px;bottom:4px;z-index:2;font-size:8px;line-height:1;color:#f5d594;text-shadow:0 1px 3px #090605}.level-node .map-node-art+.map-node-number{pointer-events:none}
+
+/* Story disclosure: the diary is part of the route, not a hidden collectible. */
+.story-teaser{display:flex;align-items:center;gap:10px;margin:12px 0 2px;padding:9px 10px;border:1px solid rgba(215,183,123,.22);border-radius:13px;background:rgba(128,193,176,.08);text-align:left}
+.story-teaser-copy{display:flex;align-items:center;gap:8px;min-width:0;flex:1}
+.story-teaser-copy>.icon{width:24px;height:24px;flex:0 0 auto;color:var(--ui-copper-light)}
+.story-teaser-copy span{min-width:0}
+.story-teaser-copy b,.story-teaser-copy small{display:block;overflow:hidden;text-overflow:ellipsis}
+.story-teaser-copy b{font-size:11px;color:var(--ui-muted-strong)}
+.story-teaser-copy small{margin-top:2px;font-size:10px;line-height:1.3;color:var(--ui-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.story-teaser .compact-button{width:auto;min-width:max-content;min-height:34px;padding:6px 9px;font-size:10px;white-space:nowrap}
+.onboarding-story{margin:14px 0 2px}
+.chapter-story-trigger{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border:1px solid rgba(143,207,190,.4);border-radius:10px;background:rgba(36,83,79,.5);color:var(--ui-seaglass);margin-left:auto}
+.chapter-story-trigger:hover{background:rgba(48,112,101,.8);border-color:var(--ui-border-active)}
+.chapter-story-trigger .icon{width:18px;height:18px}
+.story-modal-hero,.chapter-intro-art{position:relative;min-height:116px;margin:-28px -28px 20px;background-size:cover;background-position:center 35%;border-radius:var(--ui-radius-lg) var(--ui-radius-lg) 0 0;overflow:hidden;border-bottom:1px solid rgba(215,183,123,.3)}
+.story-modal-hero:after,.chapter-intro-art:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,19,17,.08),rgba(12,19,17,.88))}
+.story-chapter-tag,.chapter-intro-art>span{position:absolute;left:16px;bottom:13px;z-index:1;padding:5px 9px;border:1px solid rgba(230,201,145,.4);border-radius:9px;background:rgba(18,27,25,.72);font-size:10px;color:var(--ui-copper-light);letter-spacing:1px;text-transform:uppercase}
+.story-relic{position:absolute;right:16px;bottom:10px;z-index:1;width:62px;height:62px;display:grid;place-items:center;border-radius:16px;background:rgba(18,27,25,.62);border:1px solid rgba(230,201,145,.34)}
+.story-relic img{width:54px;height:54px;object-fit:contain}.story-relic .icon{width:36px;height:36px;color:var(--ui-copper-light)}
+.story-body{padding-top:0}.story-copy{font-size:14px!important;line-height:1.7!important;color:var(--ui-muted-strong)!important}
+.story-relic-label{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding:10px 12px;border:1px solid rgba(215,183,123,.22);border-radius:12px;background:rgba(255,255,255,.045)}
+.story-relic-label span,.story-relic-label b{font-size:11px}.story-relic-label b{color:var(--ui-copper-light);text-align:right}
+.chapter-intro-modal{padding-top:28px}.chapter-intro-art{margin:-28px -28px 18px;min-height:142px}.chapter-story-copy{margin:0 0 14px;font-size:14px!important;line-height:1.65!important}.chapter-intro-relic{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:8px 10px;border:1px solid rgba(215,183,123,.22);border-radius:12px;background:rgba(255,255,255,.045)}
+.chapter-intro-relic img{width:44px;height:44px;object-fit:contain}.chapter-intro-relic .icon{width:32px;height:32px;color:var(--ui-copper-light)}.chapter-intro-relic span{min-width:0}.chapter-intro-relic small,.chapter-intro-relic b{display:block}.chapter-intro-relic small{font-size:10px;color:var(--ui-muted)}.chapter-intro-relic b{font-size:12px;color:var(--ui-copper-light)}
+.chapter-intro-modal .companion-presence{margin-top:10px}
+.chapter-recap{margin:5px 0 7px;padding:7px 9px;border-left:2px solid var(--ui-seaglass);border-radius:0 10px 10px 0;background:rgba(128,193,176,.08);text-align:left}.chapter-recap>span{display:flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.7px;text-transform:uppercase;color:var(--ui-seaglass)}.chapter-recap .icon{width:14px;height:14px}.chapter-recap p{margin-top:3px;font-size:10px!important;line-height:1.25!important;color:var(--ui-muted-strong)!important}
+@media(max-width:700px){.story-modal-hero,.chapter-intro-art{margin:-18px -18px 16px;border-radius:18px 18px 0 0}.story-modal-hero{min-height:96px}.chapter-intro-art{min-height:112px}.story-relic{width:52px;height:52px;right:12px;bottom:9px}.story-relic img{width:45px;height:45px}.story-teaser{gap:7px;padding:8px}.story-teaser-copy>.icon{width:21px;height:21px}.story-teaser .compact-button{min-height:32px;padding-inline:8px}.story-copy{font-size:13px!important;line-height:1.58!important}.chapter-story-copy{font-size:13px!important;line-height:1.55!important}.chapter-intro-modal .companion-presence{margin-top:8px}}
