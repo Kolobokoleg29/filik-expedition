@@ -112,3 +112,49 @@ test("updates the live game status through keyboard input", async ({ page }) => 
   await expect(page.locator(".board")).toHaveAttribute("aria-label", /найдено 1/);
   await expect(page.locator("#game-tip")).toHaveAttribute("role", "status");
 });
+
+
+test("makes a letter hint visible without mobile overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.addInitScript(() => {
+    localStorage.setItem("expedition_rebus_v5", JSON.stringify({
+      version: 5,
+      onboardingSeen: true,
+      completed: [],
+      lastLevel: 1,
+      coins: 500,
+      freeHints: 0,
+      pets: [],
+      activePet: null
+    }));
+  });
+  await page.goto("/");
+  await expect(page.locator(".home")).toBeVisible();
+  await page.locator("[data-action=continue]").click();
+  await expect(page.locator(".game")).toBeVisible();
+  await page.locator("[data-action=hint]").first().click();
+  await expect(page.locator(".cell.hinted")).toHaveCount(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
+});
+
+test("announces the active companion when an expedition starts", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("expedition_rebus_v5", JSON.stringify({
+      version: 5,
+      onboardingSeen: true,
+      completed: [],
+      lastLevel: 1,
+      hearts: 0,
+      pets: ["owl"],
+      activePet: "owl",
+      petLevels: { owl: 1 },
+      companionBondXp: { owl: 0 }
+    }));
+  });
+  await page.goto("/");
+  await expect(page.locator(".home")).toBeVisible();
+  await page.locator("[data-action=continue]").click();
+  await expect(page.locator(".game-companion")).toBeVisible();
+  await expect(page.locator(".companion-speech")).toBeVisible();
+  await expect(page.locator(".companion-speech")).toHaveAttribute("aria-live", "polite");
+});

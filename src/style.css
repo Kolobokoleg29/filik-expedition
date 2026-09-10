@@ -773,3 +773,14 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
 .pet-card[data-active="true"]{border-color:var(--ui-seaglass);box-shadow:inset 0 0 0 1px rgba(128,193,176,.35),0 12px 28px rgba(5,10,9,.3)}
 .pet-status{display:inline-flex;align-items:center;gap:5px;margin-top:-4px;padding:4px 8px;border:1px solid rgba(128,193,176,.42);border-radius:999px;background:rgba(128,193,176,.12);color:#d9f0e7;font-size:9px;letter-spacing:.7px;text-transform:uppercase}
 .pet-status:before{content:'';width:5px;height:5px;border-radius:50%;background:var(--ui-seaglass);box-shadow:0 0 7px rgba(128,193,176,.75)}
+
+
+/* Gameplay feedback: short-lived visual states explain non-text rewards. */
+.cell.hinted{animation:hintReveal .85s ease-out both;background:#ffe6a6;border-color:#f2c66e;box-shadow:0 0 0 3px rgba(230,201,145,.28),0 4px 12px rgba(198,168,117,.32)}
+.bonus-strip.is-gain{animation:bonusGain .75s ease-out both;border-color:rgba(128,193,176,.8);color:#e5f6ef}
+.bonus-strip.is-chest{animation:bonusChest .95s cubic-bezier(.2,.8,.3,1.2) both;border-color:var(--ui-copper-light);color:#fff1c4;box-shadow:0 0 0 3px rgba(230,201,145,.2),0 8px 22px rgba(198,168,117,.35)}
+.game.level-complete .game-heading .progress-fill{background:var(--ui-seaglass);box-shadow:0 0 15px rgba(128,193,176,.6)}
+@keyframes hintReveal{0%{transform:scale(.86)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes bonusGain{0%{transform:scale(1)}45%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes bonusChest{0%{transform:scale(1)}35%{transform:scale(1.08) rotate(-1deg)}70%{transform:scale(.98) rotate(1deg)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.cell.hinted,.bonus-strip.is-gain,.bonus-strip.is-chest{animation:none}}
