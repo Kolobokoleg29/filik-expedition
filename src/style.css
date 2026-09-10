@@ -784,3 +784,10 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
 @keyframes bonusGain{0%{transform:scale(1)}45%{transform:scale(1.04)}100%{transform:scale(1)}}
 @keyframes bonusChest{0%{transform:scale(1)}35%{transform:scale(1.08) rotate(-1deg)}70%{transform:scale(.98) rotate(1deg)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.cell.hinted,.bonus-strip.is-gain,.bonus-strip.is-chest{animation:none}}
+
+
+/* Pending purchase feedback keeps the player informed during SDK dialogs. */
+.is-pending{cursor:wait;opacity:.78}
+.pending-spinner{display:inline-block;width:1em;height:1em;margin-right:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-.16em;animation:pendingSpin .7s linear infinite}
+@keyframes pendingSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.pending-spinner{animation:none}}

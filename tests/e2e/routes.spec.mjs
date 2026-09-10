@@ -153,3 +153,62 @@ test("introduces a new chapter without requiring a companion", async ({ page }) 
   await expect(page.locator(".chapter-story-copy")).toContainText("перевале");
   await expect(page.locator(".chapter-intro-modal .companion-presence")).toHaveCount(0);
 });
+
+
+test("shows a pending state while a Yandex purchase is unresolved", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__resolvePurchase = null;
+    localStorage.setItem("expedition_rebus_v5", JSON.stringify({
+      version: 5,
+      onboardingSeen: true,
+      completed: [],
+      lastLevel: 1,
+      coins: 120,
+      pets: [],
+      activePet: null
+    }));
+    window.YaGames = {
+      init: async () => {
+        const player = {
+          getUniqueID: () => "pending-qa",
+          getData: async () => ({}),
+          setData: async () => undefined
+        };
+        const productIds = [
+          "expedition_no_ads",
+          "expedition_starter",
+          "expedition_coins_500",
+          "expedition_coins_1200",
+          "expedition_coins_3000",
+          "expedition_coins_7500",
+          "expedition_coins_18000"
+        ];
+        const payments = {
+          getCatalog: async () => productIds.map((id) => ({ id, price: "1 ₽" })),
+          getPurchases: async () => [],
+          purchase: () => new Promise((resolve) => { window.__resolvePurchase = resolve; })
+        };
+        return {
+          getPlayer: async () => player,
+          getFlags: async ({ defaultFlags }) => defaultFlags,
+          getPayments: async () => payments,
+          features: { LoadingAPI: { ready() {} }, GameplayAPI: { start() {}, stop() {} } },
+          on() {}
+        };
+      }
+    };
+  });
+  await page.goto("/");
+  await expect(page.locator(".home")).toBeVisible();
+  await page.locator("[data-action=shop]").first().click();
+  const purchase = page.locator("[data-action=purchase-coins]").first();
+  await expect(purchase).toBeVisible();
+  await purchase.click();
+  await expect(purchase).toHaveClass(/is-pending/);
+  await expect(purchase).toHaveAttribute("aria-busy", "true");
+  await expect(purchase).toContainText("Покупка");
+
+  await page.evaluate(() => window.__resolvePurchase(null));
+  await expect(purchase).not.toHaveClass(/is-pending/);
+  await expect(purchase).not.toHaveAttribute("aria-busy");
+});
