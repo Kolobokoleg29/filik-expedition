@@ -226,7 +226,7 @@ function modal(type,html,{close=true,center=false,cls=''}={}){
   platform.pause('modal',true);app.inert=true;
   const prevScroll=(current===type&&modalRoot.querySelector('.modal'))?modalRoot.querySelector('.modal').scrollTop:0;
   const autoClass=(type==='gift'||type==='daily'||type==='weekly'||type==='wallet')?'panel-sm':type==='leaderboard'?'panel-md':'';
-  modalRoot.innerHTML=`<section class="modal ${center?'center':''} ${autoClass} ${cls}" role="dialog" aria-modal="true" aria-labelledby="modal-title">${close?btn('close','','close','icon-button close-modal','aria-label="Закрыть"'):''}${html}</section>`;
+  modalRoot.innerHTML=`<section class="modal ${center?'center':''} ${autoClass} ${cls}" data-modal-type="${type}" role="dialog" aria-modal="true" aria-labelledby="modal-title">${close?btn('close','','close','icon-button close-modal','aria-label="Закрыть"'):''}${html}</section>`;
   const box=modalRoot.querySelector('.modal');if(box&&current===type&&prevScroll)box.scrollTop=Math.min(prevScroll,box.scrollHeight-box.clientHeight);
   const title=modalRoot.querySelector('h2');if(title){title.id='modal-title';box?.setAttribute('aria-labelledby','modal-title');}const description=modalRoot.querySelector('p:not(.eyebrow)');if(description&&box){description.id='modal-description';box.setAttribute('aria-describedby','modal-description');}
   queueMicrotask(()=>{const anchor=ui.focusAnchor?modalRoot.querySelector(ui.focusAnchor):null;ui.focusAnchor=null;const target=(anchor&&!anchor.disabled)?anchor:modalRoot.querySelector('[data-modal-focus]')||modalFocusables()[0];target?.focus({preventScroll:true});});

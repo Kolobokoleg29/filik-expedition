@@ -689,3 +689,55 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
 .chapter-intro-modal .companion-presence{margin-top:10px}
 .chapter-recap{margin:5px 0 7px;padding:7px 9px;border-left:2px solid var(--ui-seaglass);border-radius:0 10px 10px 0;background:rgba(128,193,176,.08);text-align:left}.chapter-recap>span{display:flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.7px;text-transform:uppercase;color:var(--ui-seaglass)}.chapter-recap .icon{width:14px;height:14px}.chapter-recap p{margin-top:3px;font-size:10px!important;line-height:1.25!important;color:var(--ui-muted-strong)!important}
 @media(max-width:700px){.story-modal-hero,.chapter-intro-art{margin:-18px -18px 16px;border-radius:18px 18px 0 0}.story-modal-hero{min-height:96px}.chapter-intro-art{min-height:112px}.story-relic{width:52px;height:52px;right:12px;bottom:9px}.story-relic img{width:45px;height:45px}.story-teaser{gap:7px;padding:8px}.story-teaser-copy>.icon{width:21px;height:21px}.story-teaser .compact-button{min-height:32px;padding-inline:8px}.story-copy{font-size:13px!important;line-height:1.58!important}.chapter-story-copy{font-size:13px!important;line-height:1.55!important}.chapter-intro-modal .companion-presence{margin-top:8px}}
+
+/* Surface system: every modal keeps the same reading rhythm while its
+   content still owns the appropriate expedition accent. */
+#modal-root .modal[data-modal-type]{isolation:isolate}
+#modal-root .modal[data-modal-type] h2{line-height:1.08;letter-spacing:-.015em}
+#modal-root .modal[data-modal-type]>.eyebrow{letter-spacing:1.25px;text-transform:uppercase}
+#modal-root .modal[data-modal-type] .hero-icon{color:var(--ui-copper-light);filter:drop-shadow(0 8px 15px rgba(198,168,117,.18))}
+#modal-root .modal[data-modal-type="settings"] h2{margin-bottom:18px}
+#modal-root .modal[data-modal-type="settings"] .settings-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;padding:12px 0}
+#modal-root .modal[data-modal-type="settings"] .settings-row strong{font-size:13px}
+#modal-root .modal[data-modal-type="settings"] .settings-row p{margin:3px 0 0;font-size:11px;line-height:1.35}
+#modal-root .modal[data-modal-type="settings"] .switch{width:48px;height:28px;min-width:48px}
+#modal-root .modal[data-modal-type="help"] .help-step{padding:9px 0;margin:10px 0;border-bottom:1px solid rgba(215,183,123,.12)}
+#modal-root .modal[data-modal-type="help"] .help-step:last-child{border-bottom:0}
+#modal-root .modal[data-modal-type="weekly"]>p:not(.eyebrow),
+#modal-root .modal[data-modal-type="wallet"]>p:not(.eyebrow){max-width:50ch;margin-inline:auto}
+#modal-root .modal[data-modal-type="daily"] .daily-hero,
+#modal-root .modal[data-modal-type="goals"] .goals-hero,
+#modal-root .modal[data-modal-type="goals"] .goals-journal-hero,
+#modal-root .modal[data-modal-type="shop"] .shop-hero{min-height:58px}
+#modal-root .modal[data-modal-type="daily"] .daily-hero h2,
+#modal-root .modal[data-modal-type="goals"] .goals-hero h2,
+#modal-root .modal[data-modal-type="goals"] .goals-journal-hero h2,
+#modal-root .modal[data-modal-type="shop"] .shop-hero h2{font-size:clamp(22px,3vw,27px)}
+#modal-root .modal[data-modal-type="daily"] .route-note{margin-top:10px}
+#modal-root .modal[data-modal-type="goals"] .goals-list,
+#modal-root .modal[data-modal-type="goals"] .journal-goals-list{scroll-margin-top:12px}
+#modal-root .modal[data-modal-type="shop"] .shop-group:first-of-type{margin-top:12px}
+#modal-root .modal[data-modal-type="leaderboard"] .leaderboard-list{margin-top:14px}
+#modal-root .modal[data-modal-type="leaderboard"] .leader-row.self{position:relative}
+
+@media(max-width:700px){
+  #modal-root .modal[data-modal-type] h2{font-size:clamp(22px,7vw,27px)}
+  #modal-root .modal[data-modal-type="settings"] .settings-row{padding:10px 0}
+  #modal-root .modal[data-modal-type="settings"] .settings-row p{font-size:10px}
+  #modal-root .modal[data-modal-type="daily"] .daily-hero,
+  #modal-root .modal[data-modal-type="goals"] .goals-hero,
+  #modal-root .modal[data-modal-type="goals"] .goals-journal-hero,
+  #modal-root .modal[data-modal-type="shop"] .shop-hero{gap:10px}
+  #modal-root .modal[data-modal-type="daily"] .daily-hero-icon,
+  #modal-root .modal[data-modal-type="goals"] .goals-hero-icon,
+  #modal-root .modal[data-modal-type="shop"] .shop-hero-icon{width:48px;height:48px;flex-basis:48px;border-radius:14px}
+  #modal-root .modal[data-modal-type="daily"] .daily-hero-icon .icon,
+  #modal-root .modal[data-modal-type="goals"] .goals-hero-icon .icon,
+  #modal-root .modal[data-modal-type="shop"] .shop-hero-icon .icon{width:32px;height:32px}
+  #modal-root .modal[data-modal-type="daily"] .route-steps{gap:6px;margin:16px 0}
+  #modal-root .modal[data-modal-type="daily"] .route-step{min-height:94px;padding:10px 3px}
+  #modal-root .modal[data-modal-type="goals"] .goal-progress{margin-left:43px;grid-template-columns:minmax(0,1fr) auto}
+  #modal-root .modal[data-modal-type="goals"] .goal-progress button{grid-column:2}
+  #modal-root .modal[data-modal-type="goals"] .goal-progress .progress-track{grid-column:1/-1;grid-row:1}
+  #modal-root .modal[data-modal-type="leaderboard"] .leader-row.self:after{right:8px}
+}

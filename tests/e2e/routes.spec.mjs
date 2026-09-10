@@ -65,7 +65,8 @@ test("surfaces the current story from camp", async ({ page }) => {
   await expect(page.locator(".home")).toBeVisible();
   await expect(page.locator(".story-teaser")).toContainText("Запись из дневника");
   await page.locator(".story-teaser [data-action=story]").click();
-  await expect(page.locator(".story-modal-hero")).toBeVisible();
+  await expect(page.locator(".story-modal-hero")).toBeVisible()
+  await expect(page.locator("#modal-root .modal")).toHaveAttribute("data-modal-type", "story");
   await expect(page.locator(".story-copy")).toContainText("На чердаке");
   await page.keyboard.press("Escape");
   await expect(page.locator(".home")).toBeVisible();
