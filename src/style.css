@@ -791,3 +791,24 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
 .pending-spinner{display:inline-block;width:1em;height:1em;margin-right:6px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-.16em;animation:pendingSpin .7s linear infinite}
 @keyframes pendingSpin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.pending-spinner{animation:none}}
+
+/* Visual asset milestone: authored expedition art stays readable across screens. */
+.loading-compass img{display:block;width:86px;height:86px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(198,168,117,.25))}
+.route-step .route-step-icon{display:block;width:48px;height:48px;margin:0 auto 8px;object-fit:contain;filter:drop-shadow(0 5px 9px rgba(8,6,5,.35))}
+.route-step.current .route-step-icon{filter:drop-shadow(0 0 10px rgba(128,193,176,.42))}
+.route-step:not(.current):not(.done) .route-step-icon{opacity:.68;filter:saturate(.72) brightness(.72)}
+.map-route-compass{object-fit:contain}
+.pets-screen .pet-card>img{width:148px;height:148px;object-fit:contain;transform:scale(1.12);transform-origin:50% 70%;margin:0 0 -2px}
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-options{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-option{min-height:210px;padding:12px 8px;gap:8px}
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-option .shop-asset-icon,
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-option .captain-avatar-image{display:block;width:min(100%,190px);height:156px;object-fit:contain}
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-option>span{font-size:11px;font-weight:700}
+.profile-custom-group[data-profile-group="portrait"] .profile-custom-option .profile-custom-state{font-size:9px}
+@media(max-width:700px){
+  .route-step .route-step-icon{width:42px;height:42px}
+  .pets-screen .pet-card>img{width:118px;height:118px;transform:scale(1.08)}
+  .profile-custom-group[data-profile-group="portrait"] .profile-custom-option{min-height:165px;padding:8px 5px}
+  .profile-custom-group[data-profile-group="portrait"] .profile-custom-option .shop-asset-icon,
+  .profile-custom-group[data-profile-group="portrait"] .profile-custom-option .captain-avatar-image{height:112px}
+}

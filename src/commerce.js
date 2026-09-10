@@ -90,7 +90,7 @@ export class CommerceService{
   if(!already){
    state.coins+=300;
    state.freeHints+=3;
-   if(!state.pets.includes('owl')){state.pets.push('owl');state.activePet='owl';state.petLevels.owl=1;}
+   if(!state.pets.includes('wolf')){state.pets.push('wolf');state.activePet='wolf';state.petLevels.wolf=1;}
    state.starterClaimed=true;
    this.recordReceipt(token,productId,300);
    this.save();

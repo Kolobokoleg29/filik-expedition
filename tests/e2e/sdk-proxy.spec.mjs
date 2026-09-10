@@ -26,6 +26,10 @@ test("loads the official mock catalog and completes a purchase", async ({ page }
   await page.locator("[data-action=shop]").first().click();
   await expect(page.locator("[data-action=purchase-coins]")).toHaveCount(5);
   await expect(page.locator(".real-offer")).toHaveCount(2);
+  const coinPackTexts = await page.locator(".coin-pack").allTextContents();
+  expect(coinPackTexts.every((text) => !text.includes('">'))).toBe(true);
+  await expect(page.locator(".portal-currency-icon")).toHaveCount(0);
+  await expect(page.locator(".real-offer").filter({ hasText: "Волк-следопыт" })).toHaveCount(1);
 
   await page.locator("[data-action=purchase-coins]").first().click();
   await expect(page.getByText("Purchase", { exact: true })).toBeVisible();

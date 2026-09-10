@@ -380,3 +380,11 @@
 - Release preflight сканирует dist и отклоняет любой абсолютный http(s)-адрес, чтобы замечание о сервисном хранилище ловилось до загрузки архива.
 - localStorage сохранён только как локальный fallback/cache для автономной игры; при доступном SDK облачное сохранение остаётся обязательным источником для аккаунтных данных и покупок.
 - После исправления: npm run check, npm run test:sdk:dev (2/2) и npm run release:package проходят; новый архив собран для повторной загрузки в черновик.
+
+## P1 visual asset and commerce clarity checkpoint — 2026-09-10
+
+- Daily route, loading state, map compass and locked expedition states now use authored transparent PNG assets from the canonical manifest; decorative route steps no longer fall back to inline SVG symbols.
+- Four expedition illustrations were generated in the built-in ImageGen workflow, normalized to 384×384 transparent PNG, and kept below the 300 KB per-asset budget.
+- The starter explorer offer now communicates and grants the rare Wolf-tracker companion for new purchases; existing receipt/state compatibility is preserved.
+- Coin pack prices no longer render the portal currency image/sticker; malformed bonus aria text was removed from the visible card template.
+- Profile portrait options now reserve comparable visual space for captain and companion art, with a mobile breakpoint at 700px; focused Playwright coverage checks route asset backing, portrait readability and horizontal overflow.

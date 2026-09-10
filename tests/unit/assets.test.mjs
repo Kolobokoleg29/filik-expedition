@@ -22,3 +22,10 @@ test("resolves canonical asset manifest categories", () => {
   assert.equal(companionAsset("owl", "victory"), "./assets/UI/companions/owl-victory.png");
   assert.equal(uiAsset("reward_artifact.png"), "./assets/UI/reward_artifact.png");
 });
+
+test("resolves authored decorative illustration assets", () => {
+  assert.equal(ASSET_MANIFEST.ui.icons.routeCompass, "meta/route_compass_styled");
+  assert.equal(ASSET_MANIFEST.ui.icons.routeMap, "meta/route_map_styled");
+  assert.equal(ASSET_MANIFEST.ui.icons.routeCampfire, "meta/route_campfire_styled");
+  assert.equal(ASSET_MANIFEST.ui.icons.routeLocked, "meta/route_locked_styled");
+});

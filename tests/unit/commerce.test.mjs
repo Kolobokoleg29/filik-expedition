@@ -54,3 +54,21 @@ test("rejects a receipt token reused for another product", async () => {
   assert.equal(result.reason, "receipt-product-mismatch");
   assert.equal(state.coins, 120);
 });
+
+test("starter bundle grants the rare wolf companion", async () => {
+  const state = freshState();
+  const service = new CommerceService({
+    platform: { cloudReady: true, async flush() { return true; }, async consume() { return true; } },
+    store: { state },
+    analytics: { send() {} },
+    getConfig: () => normalizeConfig(),
+    save() {}
+  });
+  const result = await service.applyPurchase({ id: "expedition_starter", purchaseToken: "starter-1" });
+  assert.equal(result.ok, true);
+  assert.equal(result.changed, true);
+  assert.equal(state.pets.includes("wolf"), true);
+  assert.equal(state.pets.includes("owl"), false);
+  assert.equal(state.activePet, "wolf");
+  assert.equal(state.petLevels.wolf, 1);
+});

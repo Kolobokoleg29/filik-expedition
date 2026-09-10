@@ -16,7 +16,7 @@
 
 ## Структура
 
-- `index.html` — HTML-контейнер, метаданные, загрузка стилей/модуля, счётчик Метрики.
+- `index.html` — HTML-контейнер, метаданные и загрузка стилей/модуля; внешний загрузчик Метрики production-сборка не встраивает.
 - `src/main.js` — главный orchestrator: загрузка данных, маршрутизация экранов, игровой цикл, обработчики событий, сохранение и интеграции.
 - `src/core.js` — нормализация слов, построение клеток, проверка слова, прогресс уровня, звёзды, daily/endless-утилиты.
 - `src/progression.js` — state transitions завершения campaign/daily/endless-режимов и idempotent rewards.
@@ -49,7 +49,7 @@
 
 - Без `window.YaGames` игра работает в fallback-режиме: локальный прогресс, UI и основной игровой цикл доступны, cloud/реклама/платежи/лидерборды недоступны.
 - В публикации используются SDK Яндекс Игр, Cloud Save, Gameplay API, реклама, платежи и leaderboard `expeditionEndless`.
-- Аналитика отправляется в Яндекс Метрику, счётчик `111688508`; в событиях присутствует версия сборки и session id.
+- Production-архив не встраивает внешний загрузчик Метрики: встроенные метрики Яндекс Игр — основной источник; `Analytics` отправляет события в уже предоставленный `window.ym`, иначе использует безопасную очередь/no-op.
 - Product IDs и remote flags находятся в `live-config.json` и дублируются в `src/config.js`. При изменении нужно проверить обе точки и конфигурацию в кабинете Яндекс Игр.
 - Не добавлять ключи, токены, секреты или реальные платёжные данные в репозиторий.
 
@@ -110,7 +110,7 @@
 - Run npm run test:e2e for a fresh production-preview browser smoke on desktop and mobile.
 - Run npm run check:all before a release candidate.
 - Run npm run release:package for a deployable ZIP; the generated artifacts/ directory is ignored and must not be committed.
-- Local analytics is disabled by default; add ?analytics=1 only when explicitly testing the external Metrika integration.
+- Production-архив не содержит внешнего аналитического загрузчика; Metrika проверяется только в отдельно авторизованной среде, если host предоставляет window.ym.
 
 ## Architecture reference
 
