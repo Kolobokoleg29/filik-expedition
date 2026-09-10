@@ -95,7 +95,7 @@
 
 - Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
 - Добавлены 27 unit-тестов для core, config, economy, storage, commerce и platform.
-- Добавлены 4 Playwright smoke-теста; они собирают dist и проверяют production preview, fallback navigation и persistence после reload.
+- Добавлены 5 Playwright smoke-тестов; они собирают dist и проверяют production preview, fallback navigation, persistence после reload и защиту от повторной награды при replay.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
 - Local verification: npm run check:all проходит.
@@ -126,3 +126,4 @@
 - Добавлен локальный release preflight: сверка package/build версии и content counts, обязательные dist outputs, production config normalization, product/leaderboard IDs и базовый secret scan.
 - AGENTS.md синхронизирован с фактическим npm/Vite/Playwright/CI-процессом.
 - Local verification: npm run check:all проходит после добавления preflight.
+- Browser regression: повторное прохождение завершённого уровня не меняет coins и completed в SaveStore.

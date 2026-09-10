@@ -42,7 +42,27 @@ test("persists campaign progress across a reload", async ({ page }) => {
   await expect(page.locator(".home")).toBeVisible();
   await expect(page.locator(".journey-card")).toContainText("Уровень 2 из 304");
 });
-test("keeps the game usable at the mobile viewport", async ({ page }) => {
+test("does not duplicate rewards when replaying a completed level", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await solveLevel(page);
+  await expect(page.locator(".result-modal")).toBeVisible();
+  await page.locator(".result-footer [data-action='home']").click();
+  await expect(page.locator(".home")).toBeVisible();
+
+  const firstCompletion = await page.evaluate(() => JSON.parse(localStorage.getItem("expedition_rebus_v5")));
+  await page.locator("[data-action='map']").first().click();
+  await expect(page.locator(".map-screen")).toBeVisible();
+  await page.locator(".map-screen [data-action='level'][data-id='1']").click();
+  await expect(page.locator(".game")).toBeVisible();
+  await solveLevel(page);
+  await expect(page.locator(".result-modal")).toBeVisible();
+
+  const replayState = await page.evaluate(() => JSON.parse(localStorage.getItem("expedition_rebus_v5")));
+  expect(replayState.coins).toBe(firstCompletion.coins);
+  expect(replayState.completed).toEqual(firstCompletion.completed);
+});
+ test("keeps the game usable at the mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();
