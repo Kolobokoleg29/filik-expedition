@@ -195,3 +195,11 @@
 - Первый SDK-вход сохраняет локальный fallback в пустой cloud-профиль, но смена аккаунта заменяет состояние только новым cloud payload или fresh state, без monotonic merge старого профиля.
 - При пустом или аварийном cloud-ответе после смены аккаунта старое состояние из localStorage изолируется; добавлены regression-тесты для remote, empty и failed account-switch сценариев.
 - Local verification: 44 unit-теста проходят; реальный account-switch, cloud, payments и ads всё ещё требуют draft/staging проверки Яндекс Игр.
+
+
+## P0 release artifact checkpoint — 2026-09-10
+
+- Добавлен cross-platform scripts/package-release.mjs без новых зависимостей: он собирает ZIP только из dist, проверяет обязательные outputs и отклоняет symlink/неподдерживаемые записи.
+- Добавлена npm-команда release:package: build → budget → release-preflight → package.
+- GitHub Actions теперь выполняет packaging после browser smoke и загружает ZIP как workflow artifact; локальный ZIP остаётся в игнорируемой artifacts/.
+- Local verification: release:package создал 244-файловый ZIP Filik Expedition v5.3.4 размером 24,283,486 bytes; обязательные index, catalogs, config и app icon подтверждены.

@@ -28,3 +28,11 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Browser smoke
         run: npm run test:e2e
+      - name: Release artifact
+        run: npm run release:package
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: filik-expedition-release-${{ github.sha }}
+          path: artifacts/*.zip
+          if-no-files-found: error

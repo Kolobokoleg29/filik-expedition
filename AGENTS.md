@@ -108,6 +108,7 @@
 - Run npm run check for syntax, content, unit tests, production build, budgets, and release preflight.
 - Run npm run test:e2e for a fresh production-preview browser smoke on desktop and mobile.
 - Run npm run check:all before a release candidate.
+- Run npm run release:package for a deployable ZIP; the generated artifacts/ directory is ignored and must not be committed.
 - Local analytics is disabled by default; add ?analytics=1 only when explicitly testing the external Metrika integration.
 
 ## Architecture reference
