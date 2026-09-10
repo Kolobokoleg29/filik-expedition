@@ -334,3 +334,11 @@
 - После boot без YaGames игрок получает явное уведомление о локальном режиме; при наличии SDK без cloudReady показывается понятный fallback без блокировки игры.
 - Добавлен browser regression на offline/online events; локальный fallback и основной gameplay не зависят от наличия SDK.
 - Официальная проверка API подтверждает корректные контракты для LoadingAPI.ready, GameplayAPI.start/stop, ads callbacks, player data, payments и leaderboards; real draft/staging сценарии по-прежнему требуют ручного прогона в кабинете.
+
+
+## P1 Yandex staging protocol checkpoint — 2026-09-10
+
+- Добавлен `docs/YANDEX_STAGING_CHECKLIST.md` с привязанными к проекту версиями, product ID, leaderboard ID и ключом cloud save.
+- Чек-лист разделяет доказательства локального кандидата и подтверждения настоящего SDK: Loading/Gameplay API, аккаунтная изоляция cloud save, callback-логика рекламы, восстановление receipt и лидерборд.
+- Зафиксировано правило: `Invalid archive` из интерфейса кабинета не считается блокером по решению владельца, но и не заменяется локальным mock SDK; финальная готовность требует реального staging-прогона и evidence по каждой обязательной строке.
+- Следующий release-критерий — заполнить staging-матрицу на проверенном архиве после осознанного решения по расхождению версии кабинета и репозитория.
