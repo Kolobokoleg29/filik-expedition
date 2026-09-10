@@ -43,6 +43,8 @@ export class YandexPlatform {
       this.accountSelectionOpen=false;
       this.status('account','selection_closed');
       this.player=null;
+      this.paymentsApi=null;
+      this.cloudReady=false;
       let result;
       try{result=this.onAccountSelection(false);}catch{result=null;}
       Promise.resolve(result).catch(()=>{}).finally(()=>this.pause('account-selection',false));

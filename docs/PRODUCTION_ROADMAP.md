@@ -175,6 +175,6 @@
 
 ## P1 account refresh checkpoint — 2026-09-10
 
-- При re-auth/account selection refreshPlayer очищает account-bound player и payments caches и временно сбрасывает cloudReady.
+- При re-auth/account selection refreshPlayer и SDK close-событие очищают account-bound player/payments caches и сбрасывают cloudReady до подтверждения новой сессии.
 - Ошибка получения нового cloud player теперь остаётся fail-closed, чтобы старое cloud/payment состояние не использовалось для другого аккаунта; локальный fallback сохраняется.
 - Добавлены reliability tests для успешного cache reset и неуспешного account refresh.

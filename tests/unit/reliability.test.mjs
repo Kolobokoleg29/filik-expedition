@@ -155,3 +155,27 @@ test("fails closed when refreshing the cloud player fails", async () => {
   assert.equal(platform.paymentsApi, null);
   assert.equal(platform.cloudReady, false);
 });
+
+test("invalidates account caches on SDK account close", async () => {
+  const platform = new YandexPlatform(makeStore(), makeHost());
+  const handlers = new Map();
+  platform.sdk = {
+    EVENTS: { ACCOUNT_SELECTION_DIALOG_OPENED: "opened", ACCOUNT_SELECTION_DIALOG_CLOSED: "closed" },
+    on(event, handler) { handlers.set(event, handler); }
+  };
+  platform.player = { id: "old-player" };
+  platform.paymentsApi = { id: "old-payments" };
+  platform.cloudReady = true;
+
+  platform.bindAccountSelectionEvents();
+  handlers.get("opened")();
+  assert.equal(platform.accountSelectionOpen, true);
+  assert.equal(platform.paused, true);
+  handlers.get("closed")();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(platform.accountSelectionOpen, false);
+  assert.equal(platform.player, null);
+  assert.equal(platform.paymentsApi, null);
+  assert.equal(platform.cloudReady, false);
+  assert.equal(platform.paused, false);
+});
