@@ -148,3 +148,11 @@
 - Добавлены 3 Playwright accessibility regression-теста: mobile overflow, modal focus/semantics и ввод русской раскладки физическими keyboard-кодами.
 - Browser visual audit выполнен на fallback-режиме; screenshot evidence сохраняется только во временных test-results и не попадает в релиз.
 - Local verification: npx playwright test tests/e2e/accessibility.spec.mjs проходит полностью.
+## P1 Yandex integration resilience checkpoint — 2026-09-10
+
+- Ad boundary теперь различает неоткрывшуюся рекламную сессию и реально открытую: ошибка до открытия не ставит interstitial cooldown, а открытая сессия сохраняет защиту от повторного показа.
+- Cloud setData failure остаётся retryable через dirty queue; локальный fallback не блокируется.
+- Pending coin receipt можно повторно settle-ить после временного consume failure без повторной выдачи монет.
+- Добавлены 5 unit-тестов для ad error/timeout, cloud retry и idempotent purchase paths.
+- Real SDK, cloud, ads, payments и leaderboard всё ещё требуют ручной проверки в draft/staging кабинете Яндекс Игр перед публикацией.
+- Local verification: npm run test:unit проходит полностью.

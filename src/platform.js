@@ -125,7 +125,7 @@ export class YandexPlatform {
     this.adBusy=true;this.pause('ad',true);void this.flush();
     return new Promise(resolve=>{
       let reward=false,settled=false,opened=false,openTimer=null,sessionTimer=null;
-      const finish=(success)=>{if(settled)return;settled=true;clearTimeout(openTimer);clearTimeout(sessionTimer);this.adBusy=false;this.lastAd=Date.now();this.pause('ad',false);resolve(success);};
+      const finish=(success)=>{if(settled)return;settled=true;clearTimeout(openTimer);clearTimeout(sessionTimer);this.adBusy=false;if(opened||success)this.lastAd=Date.now();this.pause('ad',false);resolve(success);};
       openTimer=setTimeout(()=>{if(!opened)finish(false);},this.adOpenTimeout);
       try{this.sdk.adv[method]({callbacks:{
         onOpen:()=>{if(settled)return;opened=true;clearTimeout(openTimer);sessionTimer=setTimeout(()=>finish(false),this.adSessionTimeout);},
