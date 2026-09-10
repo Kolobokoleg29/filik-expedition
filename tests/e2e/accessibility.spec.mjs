@@ -50,6 +50,20 @@ test("wraps goals categories inside the mobile modal", async ({ page }) => {
   expect(metrics.overflowing).toBe(0);
 });
 
+test("restores trigger focus across nested modals", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await page.locator("[data-action=home]").first().click();
+  const weekly = page.locator("[data-action=weekly]").first();
+  await weekly.click();
+  await page.locator("[data-action=leaderboard]").click();
+  await expect(page.locator(".modal")).toContainText("Таблица пока недоступна");
+
+  await page.keyboard.press("Escape");
+  await expect(page.locator("[data-action=leaderboard]")).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(weekly).toBeFocused();
+});
 test("keeps modal semantics and focus contained", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();

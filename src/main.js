@@ -212,11 +212,13 @@ function victory(result){
 }
 function celebrate(){if(!state().settings.motion||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const el=document.createElement('div');el.className='celebrate';el.setAttribute('aria-hidden','true');el.innerHTML=Array.from({length:30},(_,i)=>`<i class="confetti" style="--left:${Math.random()*100}%;--color:${['#f9d78e','#8ee0b8','#fef1d7'][i%3]};--delay:${Math.random()*.45}s"></i>`).join('');document.body.append(el);setTimeout(()=>el.remove(),3000);}
 function modalFocusables(){return [...modalRoot.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex]:not([tabindex="-1"])')].filter(el=>!el.hidden&&el.getAttribute('aria-hidden')!=='true'&&el.offsetParent!==null);}
+function focusDescriptor(element){if(!element?.dataset?.action)return null;return {action:element.dataset.action,id:element.dataset.id||null};}
+function focusFromDescriptor(descriptor){if(!descriptor)return null;return [...modalRoot.querySelectorAll("[data-action=\""+CSS.escape(descriptor.action)+"\"]")].find(element=>!descriptor.id||element.dataset.id===descriptor.id)||null;}
 function modal(type,html,{close=true,center=false,cls=''}={}){
   const current=ui.modal;
   if(current&&current!==type){
     const m=modalRoot.querySelector('.modal');
-    ui.modalStack.push({type:current,html:modalRoot.innerHTML,scroll:m?m.scrollTop:0,closable:ui.modalClosable});
+    ui.modalStack.push({type:current,html:modalRoot.innerHTML,scroll:m?m.scrollTop:0,closable:ui.modalClosable,focus:focusDescriptor(document.activeElement),previousFocus:ui.previousFocus,stack:ui.modalStack.slice()});
   }else if(!current){ui.previousFocus=document.activeElement;ui.modalStack=[];}
   ui.modal=type;ui.modalClosable=!!close;ui.drag=null;ui.selected=[];
   if(ui.screen==='game')updateSelection();
@@ -231,11 +233,12 @@ function modal(type,html,{close=true,center=false,cls=''}={}){
 function closeModal(restore=true){
   const top=ui.modalStack.at(-1);
   if(ui.modalStack.length&&restore){
+    const parentFocus=top.previousFocus,parentStack=top.stack||[],focus=top.focus;
     ui.modalStack.pop();ui.modal=null;ui.modalClosable=top.closable;
     const fresh={wallet,shop,gift,goals,daily,weekly,profile,showSettings,help,petsPage}[top.type];
-    if(fresh){fresh();return;}
+    if(fresh){fresh();ui.previousFocus=parentFocus;ui.modalStack=parentStack;queueMicrotask(()=>{(focusFromDescriptor(focus)||modalFocusables()[0])?.focus({preventScroll:true});});return;}
     ui.modal=top.type;modalRoot.innerHTML=top.html;const m=modalRoot.querySelector('.modal');if(m){m.scrollTop=Math.min(top.scroll,m.scrollHeight-m.clientHeight);}
-    queueMicrotask(()=>{const f=modalFocusables()[0];f?.focus({preventScroll:true});});
+    ui.previousFocus=parentFocus;ui.modalStack=parentStack;queueMicrotask(()=>{(focusFromDescriptor(focus)||modalFocusables()[0])?.focus({preventScroll:true});});
     return;
   }
   if(restore&&ui.screen==='game'&&ui.progress?.finished&&ui.modalStack.length===0){home();return;}

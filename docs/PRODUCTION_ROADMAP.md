@@ -162,7 +162,7 @@
 - Runtime сохраняет один responsive background request через canonical assets/UI paths; CSS custom property использует stylesheet-relative ../assets base.
 - Vite build-plugin копирует только assets/UI, canonical favicon перепривязывается к UI-файлу, лишние hashed favicon и дублирующие root fonts не попадают в release archive.
 - Добавлен Playwright performance regression: computed background не равен none, нет /assets/assets paths или failed requests, mobile не получает horizontal overflow.
-- Новый baseline: initial 258 KB, total dist 25,202 KB, desktop/mobile boot без duplicate camp background requests.
+- Новый baseline: initial 259 KB, total dist 25,203 KB, desktop/mobile boot без duplicate camp background requests.
 - Local verification: npm run build, npm run test:budget, npm run test:release и performance E2E проходят.
 
 ## P1 responsive QA checkpoint — 2026-09-10
@@ -171,6 +171,7 @@
 - Исправлен подтверждённый mobile overflow в журнале целей: category tabs теперь переносятся в пределах модального окна, а не уходят за viewport скрытой горизонтальной полосой.
 - Добавлен Playwright regression на ширину и границы category tabs в mobile goals modal.
 - Добавлены flow regression-тесты для запуска daily route и корректного двухступенчатого Escape в weekly → leaderboard nested modal.
+- Modal stack теперь сохраняет trigger descriptor и родительский focus anchor: Escape восстанавливает focus на leaderboard, затем на исходную weekly CTA.
 - Для коротких mobile viewport home теперь вертикально прокручивается: weekly CTA и подпись не теряются за нижней границей экрана.
 - Добавлен browser asset-loading regression: после прокрутки lazy-контента все изображения map/album/pets загружаются на mobile и desktop без broken requests.
 
