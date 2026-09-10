@@ -624,6 +624,7 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
   .home-body{gap:16px;padding-inline:0}
   .home .journey-card{width:min(380px,100%);padding-inline:20px}
   .home-bottom{gap:7px}
+  .screen.home{overflow-y:auto;overscroll-behavior:contain}
   .game-stage{width:100%;gap:0}
   .board-area{padding-inline:0;padding-bottom:34px}
   .board-area:before{inset:8% 0 16%;border-radius:22px}

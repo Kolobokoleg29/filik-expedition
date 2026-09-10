@@ -171,3 +171,4 @@
 - Исправлен подтверждённый mobile overflow в журнале целей: category tabs теперь переносятся в пределах модального окна, а не уходят за viewport скрытой горизонтальной полосой.
 - Добавлен Playwright regression на ширину и границы category tabs в mobile goals modal.
 - Добавлены flow regression-тесты для запуска daily route и корректного двухступенчатого Escape в weekly → leaderboard nested modal.
+- Для коротких mobile viewport home теперь вертикально прокручивается: weekly CTA и подпись не теряются за нижней границей экрана.
