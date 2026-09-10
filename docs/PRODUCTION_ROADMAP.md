@@ -90,3 +90,12 @@
 ## Рабочий цикл Goal
 
 Каждый этап должен иметь короткий scope, список изменяемых файлов, проверку до/после, отдельный коммит и обновление этого roadmap. Не запускать широкую параллельную работу без независимых границ файлов.
+
+## P0 checkpoint — 2026-09-10
+
+- Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
+- Добавлены 22 unit-теста для core, config, economy, storage и commerce.
+- Добавлены 2 Playwright smoke-теста; они собирают dist и проверяют production preview.
+- Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
+- Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
+- Local verification: npm run check:all проходит.

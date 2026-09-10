@@ -3,6 +3,8 @@ const sessionId=(()=>{try{const key='expedition_metrics_session';let v=sessionSt
 export class Analytics {
   constructor(){this.ready=false;this.queue=[];this.warned=false;}
   init(){
+    const host=window.location?.hostname||'',search=window.location?.search||'';
+    if(['localhost','127.0.0.1','terminal.local',''].includes(host)&&!new URLSearchParams(search).has('analytics'))return;
     if(this.ready)return;
     const call=()=>{if(typeof window.ym==='function'){this.ready=true;this.queue.splice(0).forEach(([e,p])=>this.send(e,p));}};
     try{window.ym=window.ym||function(){(window.ym.a=window.ym.a||[]).push(arguments);};window.ym.l=Date.now();

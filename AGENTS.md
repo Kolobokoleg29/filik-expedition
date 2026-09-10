@@ -99,3 +99,11 @@
 - Use one main agent for normal tasks. Delegate only large independent subtasks with explicit file ownership; do not start review/fix/re-review chains without a new signal.
 - Batch independent read-only checks. Do not reread unchanged large JSON or repeat successful tests without changed inputs.
 - Do not add a skill or plugin when an existing one covers the task; new rules should reduce repeated decisions rather than duplicate this document.
+
+## Quality gate
+
+- Install with npm ci.
+- Run npm run check for syntax, content, unit tests, and production build.
+- Run npm run test:e2e for a fresh production-preview browser smoke on desktop and mobile.
+- Run npm run check:all before a release candidate.
+- Local analytics is disabled by default; add ?analytics=1 only when explicitly testing the external Metrika integration.
