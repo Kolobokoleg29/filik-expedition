@@ -67,6 +67,10 @@ if (liveConfig) {
 
 const distIndex = readText("dist/index.html");
 if (/localhost|127\.0\.0\.1/i.test(distIndex)) errors.push("Production index.html contains a local development host");
+const platformSource = readText("src/platform.js");
+if (!/sdk\.games\.s3\.yandex\.net\/sdk\.js/.test(platformSource)) errors.push("Yandex SDK official source is not configured");
+if (!/YaGames\.init\s*\(/.test(platformSource)) errors.push("Yandex SDK init contract is missing");
+if (!/LoadingAPI\?\.ready\s*\(\)/.test(platformSource)) errors.push("Yandex LoadingAPI.ready contract is missing");
 
 if (errors.length) {
   console.error("Release preflight failed:");

@@ -226,3 +226,8 @@
 
 - Receipt ledger теперь отклоняет повторное использование уже привязанного purchase token для другого product ID.
 - Добавлен regression-тест; выдача и consume для корректного повторного callback остаются idempotent.
+
+## P1 Yandex SDK loading checkpoint — 2026-09-10
+
+- Для Yandex-hosted archive сохраняется относительный /sdk.js proxy, а для собственного домена используется официальный абсолютный SDK URL.
+- Добавлены platform regression-тесты для обоих host-контуров и release preflight-проверки SDK init и LoadingAPI.ready.

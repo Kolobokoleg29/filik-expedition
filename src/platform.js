@@ -2,6 +2,7 @@ import {SAVE_KEY,migrateLegacy,sanitizeState} from './storage.js';
 import {applyLanguage,readSdkLang} from './i18n.js';
 const timeout=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve(null);},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve(value);},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
 const settled=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve({ok:false,value:null});},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve({ok:true,value});},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
+const sdkScriptPath=(host,localProxy)=>{if(localProxy)return '/sdk.js';const hostname=String(host?.location?.hostname||'').toLowerCase();return /(^|\.)yandex\.[a-z.]+$/.test(hostname)?'/sdk.js':'https://sdk.games.s3.yandex.net/sdk.js';};
 const playerAccountId=player=>{try{const id=player?.getUniqueID?.();return typeof id==='string'&&id.length<=256?id:'';}catch{return ''}};
 export class YandexPlatform {
   constructor(store,host=window,options={}){this.store=store;this.host=host;this.sdk=null;this.player=null;this.paymentsApi=null;this.cloudReady=false;this.readySent=false;this.readyWanted=false;this.wanted=false;this.playing=false;this.reasons=new Set();this.listeners=[];this.adBusy=false;this.lastAd=Date.now();this.lastCloud=0;this.dirty=false;this.timer=null;this.syncing=false;this.cloudRequestId=0;this.accountSelectionOpen=false;this.language='ru';this.adCooldownMs=180000;this.adOpenTimeout=options.adOpenTimeout??15000;this.adSessionTimeout=options.adSessionTimeout??120000;this.lastStatus=null;this.onStatus=()=>{};this.onAccountSelection=()=>{};store.onChange=()=>this.queueSave();}
@@ -15,7 +16,7 @@ export class YandexPlatform {
     // fallback-режимом без ожидания отсутствующего SDK.
     const localProxy=local&&this.host.location.protocol==='https:';
     if((!local||localProxy) && !this.host.YaGames){
-      await timeout(new Promise(resolve=>{const s=this.host.document.createElement('script');s.src='/sdk.js';s.onload=()=>{this.status('sdk','script_loaded');resolve();};s.onerror=()=>{this.status('sdk','script_error');resolve();};this.host.document.head.append(s);}),4000);
+      await timeout(new Promise(resolve=>{const s=this.host.document.createElement('script');s.src=sdkScriptPath(this.host,localProxy);s.onload=()=>{this.status('sdk','script_loaded');resolve();};s.onerror=()=>{this.status('sdk','script_error');resolve();};this.host.document.head.append(s);}),4000);
     }
     if(this.host.YaGames){try{this.sdk=await timeout(this.host.YaGames.init(),5000);if(!this.sdk)this.status('sdk','init_timeout');}catch{this.status('sdk','init_error');}}
     if(this.sdk){

@@ -7,8 +7,8 @@ function makeStore() {
   return { state: freshState(), onChange: () => {} };
 }
 
-function makeHost(search = "") {
-  return { location: { hostname: "localhost", protocol: "http:", search } };
+function makeHost(search = "", hostname = "localhost", protocol = "http:") {
+  return { location: { hostname, protocol, search } };
 }
 
 test("keeps gameplay paused until all platform reasons are released", () => {
@@ -69,4 +69,25 @@ test("resolves rewarded ads only after the SDK callback reports a reward", async
   assert.equal(await platform.rewarded(), true);
   assert.equal(platform.adBusy, false);
   assert.equal(platform.paused, false);
+});
+test("uses the official SDK URL outside Yandex hosting", async () => {
+  let scriptSource = "";
+  const host = makeHost("", "example.com", "https:");
+  host.document = {
+    createElement() { return {}; },
+    head: { append(script) { scriptSource = script.src; host.YaGames = { async init() { return null; } }; script.onload?.(); } }
+  };
+  await new YandexPlatform(makeStore(), host).init();
+  assert.equal(scriptSource, "https://sdk.games.s3.yandex.net/sdk.js");
+});
+
+test("uses the relative SDK proxy on Yandex hosting", async () => {
+  let scriptSource = "";
+  const host = makeHost("", "games.yandex.ru", "https:");
+  host.document = {
+    createElement() { return {}; },
+    head: { append(script) { scriptSource = script.src; host.YaGames = { async init() { return null; } }; script.onload?.(); } }
+  };
+  await new YandexPlatform(makeStore(), host).init();
+  assert.equal(scriptSource, "/sdk.js");
 });
