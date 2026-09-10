@@ -158,3 +158,14 @@ test("announces the active companion when an expedition starts", async ({ page }
   await expect(page.locator(".companion-speech")).toBeVisible();
   await expect(page.locator(".companion-speech")).toHaveAttribute("aria-live", "polite");
 });
+
+
+test("explains offline fallback and network recovery", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+
+  await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+  await expect(page.locator("#toast")).toContainText("Нет соединения");
+  await page.evaluate(() => window.dispatchEvent(new Event("online")));
+  await expect(page.locator("#toast")).toContainText("Соединение восстановлено");
+});

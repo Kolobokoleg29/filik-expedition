@@ -327,3 +327,10 @@
 - Receipt ledger, порядок cloud save → consume и fallback без SDK не изменялись.
 - Добавлен Playwright regression с полностью локальным mock SDK: незавершённая покупка подтверждает pending UX и корректное восстановление после cancel; реальный каталог и платежи не вызываются.
 - Полный локальный gate после этапа: content 304/2000, 51 unit, build, budget, release preflight и 24 Playwright-теста проходят.
+
+## P1 offline and fallback status checkpoint — 2026-09-10
+
+- При потере сети игра показывает компактное сообщение, что основной цикл продолжает работать, а прогресс сохраняется локально; после возврата сети сообщает о восстановлении соединения и запускает queued cloud flush.
+- После boot без YaGames игрок получает явное уведомление о локальном режиме; при наличии SDK без cloudReady показывается понятный fallback без блокировки игры.
+- Добавлен browser regression на offline/online events; локальный fallback и основной gameplay не зависят от наличия SDK.
+- Официальная проверка API подтверждает корректные контракты для LoadingAPI.ready, GameplayAPI.start/stop, ads callbacks, player data, payments и leaderboards; real draft/staging сценарии по-прежнему требуют ручного прогона в кабинете.

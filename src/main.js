@@ -288,7 +288,8 @@ platform.listeners.push(paused=>{audio.setPaused(paused);document.querySelector(
 document.addEventListener('visibilitychange',()=>{platform.pause('hidden',document.hidden);if(document.hidden){store.persist();void platform.flush();}});
 window.addEventListener('blur',()=>platform.pause('blur',true));window.addEventListener('focus',()=>{platform.pause('blur',false);});
 window.addEventListener('pagehide',()=>{store.persist();void platform.flush();});window.addEventListener('resize',()=>{ui.drag=null;if(ui.screen!=='game')return;const keep=ui.selected.slice();requestAnimationFrame(()=>{ui.selected=keep;fitBoard();updateSelection();updateTutorialGuide();});});
-window.addEventListener('online',()=>{void platform.flush();});
+window.addEventListener('offline',()=>toast('Нет соединения. Игра продолжает работать, прогресс сохранится локально.'));
+window.addEventListener('online',()=>{toast(platform.cloudReady?'Соединение восстановлено. Сохраняем прогресс.':'Соединение восстановлено.');void platform.flush();});
 async function boot(){try{analytics.init();analytics.send('session_start');analytics.send('boot_start');
  const dataPromise=fetchJson('./levels.json',{attempts:2,timeoutMs:8000,retryDelayMs:250});
  const configPromise=fetchJson('./live-config.json',{attempts:2,timeoutMs:5000,retryDelayMs:150}).catch(()=>({}));
@@ -296,7 +297,7 @@ async function boot(){try{analytics.init();analytics.send('session_start');analy
  const bootImage=chapterAsset(0,matchMedia('(max-width:700px)').matches?'portrait':'wide');
  const assetsPromise=Promise.allSettled([document.fonts.load('700 16px Golos'),document.fonts.load('900 32px Mulish'),new Promise(resolve=>{const image=new Image();image.onload=resolve;image.onerror=resolve;image.src=bootImage;})]);
  const [levelData,localConfig]=await Promise.all([dataPromise,configPromise]);levels=levelData;if(!Array.isArray(levels)||levels.length!==304)throw new Error('Invalid level catalog');
- await Promise.all([sdkPromise,Promise.race([assetsPromise,new Promise(r=>setTimeout(r,3500))])]);const normalized=normalizeConfig(localConfig),flags=await platform.flags(configDefaultFlags(normalized));liveConfig=applyRemoteFlags(normalized,flags);platform.configure(liveConfig);analytics.send('config_loaded',{version:liveConfig.version,remote:!!platform.sdk?.getFlags});updateSettings();home();await new Promise(requestAnimationFrame);platform.ready();analytics.send('boot_ready',{sdk:!!platform.sdk,cloud:platform.cloudReady});
+ await Promise.all([sdkPromise,Promise.race([assetsPromise,new Promise(r=>setTimeout(r,3500))])]);const normalized=normalizeConfig(localConfig),flags=await platform.flags(configDefaultFlags(normalized));liveConfig=applyRemoteFlags(normalized,flags);platform.configure(liveConfig);analytics.send('config_loaded',{version:liveConfig.version,remote:!!platform.sdk?.getFlags});updateSettings();home();if(!navigator.onLine)toast('Нет соединения. Игра продолжает работать локально.');else if(!platform.sdk)toast('Локальный режим: прогресс сохраняется на устройстве.');else if(!platform.cloudReady)toast('Облачное сохранение пока недоступно. Можно продолжать локально.');await new Promise(requestAnimationFrame);platform.ready();analytics.send('boot_ready',{sdk:!!platform.sdk,cloud:platform.cloudReady});
  if(platform.sdk&&commerceAvailable())void (async()=>{await commerce.loadCatalog();await commerce.recover();if(ui.modal==='shop')screens.shop();else if(ui.screen==='home')screens.home();})();
  if(!store.persistent)toast('Браузер не разрешает сохранение на устройстве');
  if(!state().onboardingSeen){if(!activationStarted){activationStarted=true;analytics.send('activation_start',{entry:'first_level',level:nextLevel(state())});}queueMicrotask(()=>startLevel(nextLevel(state())));}
