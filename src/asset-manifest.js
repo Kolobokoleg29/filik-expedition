@@ -18,6 +18,7 @@ export const ASSET_MANIFEST = Object.freeze({
       rewardHeart: "reward_heart",
       rewardStar: "reward_star",
       artifact: "reward_artifact",
+      mapRouteCompass: "map_route_compass",
       chest: "bonus_chest_closed",
       chestOpen: "bonus_chest_open",
       lantern: "camp_lantern",

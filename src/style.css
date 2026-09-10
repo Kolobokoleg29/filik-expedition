@@ -657,3 +657,6 @@ button:focus-visible{outline:2px solid var(--ui-copper-light);outline-offset:3px
   .loading-compass{animation:none}
   .tutorial-hand-icon{animation:none}
 }
+
+.map-title-row{display:flex;align-items:center;justify-content:space-between;gap:22px;width:min(100%,980px);margin:25px auto 22px}.map-title-row .page-title{min-width:0;margin:0}.map-route-compass{width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 9px 15px #09060575);opacity:.96;flex:0 0 auto}
+@media(max-width:700px){.map-title-row{align-items:flex-start;gap:10px;margin-top:20px}.map-route-compass{width:70px;height:70px;margin-top:2px}}
