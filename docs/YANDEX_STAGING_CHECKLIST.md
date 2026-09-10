@@ -132,3 +132,6 @@ Staging считается пройденным только когда все �
 
 
 Подтверждённый локальный прогон 2026-09-10: dev-proxy v0.0.2 отдал SDK и каталог с HTTP 200, показал все 7 товаров, purchase success/cancel сохранили ожидаемую идемпотентность, rewarded выдал одну награду после timer + close-cross, console/page errors отсутствовали.
+
+
+Автоматический proxy-прогон 2026-09-10: `npm run test:sdk:dev` успешно запустил официальный dev-proxy, проверил HTTP 200 для SDK и каталога, 7 товаров, purchase success/cancel, pending UX и rewarded callback; 2 Playwright-сценария прошли без console/page errors. Real draft-пункты остаются обязательными.

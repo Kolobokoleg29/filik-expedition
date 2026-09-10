@@ -365,3 +365,11 @@
 - Проверены 7 offers, mock purchase success (500 монет), mock cancel (баланс не меняется) и rewarded callback (ровно +30 монет после timer + close-cross).
 - Зафиксирована особенность mock-рекламы: до окончания таймера крест вызывает cancel без награды; это ожидаемая ветка тестовой заглушки, а не production-правило рекламы.
 - Локальная SDK-среда теперь имеет воспроизводимую команду и evidence; real draft-прогон cloud save, авторизации, платежей и leaderboard остаётся обязательным.
+
+
+## P1 official SDK automation checkpoint — 2026-09-10
+
+- Добавлен `playwright.sdk.config.mjs`, изолированный `sdk-proxy.spec.mjs` и runner `scripts/test-sdk-dev.mjs`.
+- `npm run test:sdk:dev` сам собирает dev-кандидат, поднимает официальный `@yandex-games/sdk-dev-proxy@0.0.2`, ждёт `/sdk.js`, выполняет два браузерных сценария и завершает дерево proxy-процессов.
+- Автоматически подтверждены catalog HTTP 200, 5 coin packs, 2 real offers, покупка success/cancel, pending UX и rewarded callback без console/page errors.
+- Этот gate воспроизводит локальную платформенную интеграцию; staging-верификация cloud save, аккаунтов, реальной рекламы, платежей и leaderboard ещё не закрыта.

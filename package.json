@@ -16,6 +16,7 @@
     "test:release": "node scripts/check-release.mjs",
     "release:package": "npm run test:product && npm run build && npm run test:budget && npm run test:release && node scripts/package-release.mjs",
     "sdk:dev": "npm run build && node scripts/prepare-sdk-dev.mjs && npx --yes @yandex-games/sdk-dev-proxy@0.0.2 -p dist --dev-mode=true --port 8080 --csp",
+    "test:sdk:dev": "node scripts/test-sdk-dev.mjs",
     "test:e2e": "npm run build && playwright test",
     "check": "npm run test:syntax && npm run test:content && npm run test:product && npm run test:unit && npm run build && npm run test:budget && npm run test:release",
     "check:all": "npm run check && npm run test:e2e"

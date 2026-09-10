@@ -3,6 +3,7 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   testMatch: "**/*.spec.mjs",
+  testIgnore: "**/sdk-proxy.spec.mjs",
   timeout: 30000,
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
