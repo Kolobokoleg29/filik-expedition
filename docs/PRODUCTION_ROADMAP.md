@@ -203,3 +203,9 @@
 - Добавлена npm-команда release:package: build → budget → release-preflight → package.
 - GitHub Actions теперь выполняет packaging после browser smoke и загружает ZIP как workflow artifact; локальный ZIP остаётся в игнорируемой artifacts/.
 - Local verification: release:package создал 244-файловый ZIP Filik Expedition v5.3.4 размером 24,283,486 bytes; обязательные index, catalogs, config и app icon подтверждены.
+
+## P1 gameplay content gate checkpoint — 2026-09-10
+
+- Добавлен scripts/check-gameplay-content.mjs и подключён в npm run test:content как второй слой после структурного content validator.
+- Gate проверяет все ID кампании и endless, границы и конфликты grid-клеток, canonical target/bonus words и их classification, согласованность difficulty metrics, перестановку endless-шаблонов и диапазон daily routes.
+- Local verification: 304 campaign, 2000 endless, 44,428 occupied cells, 13,293 target words, 28,662 bonus words и 2,000 unique endless templates проходят без ошибок.

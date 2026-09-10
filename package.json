@@ -10,7 +10,7 @@
     "test": "npm run test:unit",
     "test:unit": "node --test tests/unit/*.test.mjs",
     "test:syntax": "node scripts/check-syntax.mjs",
-    "test:content": "node .agents/skills/filik-content/scripts/validate-content.mjs",
+    "test:content": "node .agents/skills/filik-content/scripts/validate-content.mjs && node scripts/check-gameplay-content.mjs",
     "test:budget": "node scripts/check-budgets.mjs",
     "test:release": "node scripts/check-release.mjs",
     "release:package": "npm run build && npm run test:budget && npm run test:release && node scripts/package-release.mjs",
