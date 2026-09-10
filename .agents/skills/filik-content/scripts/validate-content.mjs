@@ -91,6 +91,26 @@ const artifactImages = [...artifactSource.matchAll(/^\s*\d+:'([^']+)'/gm)].map((
 if (artifactImages.length !== 38) errors.push("Artifact image count is " + artifactImages.length + ", expected 38");
 for (const image of artifactImages) assertFile("assets/UI/artifacts/" + image, "artifact image");
 
+const runtimeFiles = [
+  "index.html",
+  ...fs.readdirSync(path.join(root, "src"))
+    .filter((file) => file.endsWith(".js") || file.endsWith(".css"))
+    .map((file) => path.join("src", file))
+];
+const runtimeAssetRefs = new Set();
+for (const file of runtimeFiles) {
+  const source = fs.readFileSync(path.join(root, file), "utf8");
+  for (const match of source.matchAll(new RegExp("(?:../|./)?assets/[A-Za-z0-9._/-]+", "g"))) {
+    let ref = match[0];
+    while (ref.startsWith('"') || ref.startsWith("'")) ref = ref.slice(1);
+    while (ref.startsWith("../")) ref = ref.slice(3);
+    while (ref.startsWith("./")) ref = ref.slice(2);
+    if (ref && !ref.endsWith("/")) runtimeAssetRefs.add(ref);
+  }
+}
+for (const ref of runtimeAssetRefs) {
+  if (!fs.existsSync(path.join(root, ref))) errors.push("Missing runtime asset reference: " + ref);
+}
 if (errors.length) {
   console.error("Content validation failed:");
   for (const error of errors) console.error("- " + error);

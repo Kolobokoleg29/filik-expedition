@@ -22,4 +22,4 @@ From the repository root, run:
 
 node .agents/skills/filik-content/scripts/validate-content.mjs
 
-The validator is dependency-free and checks catalog shape, spellable words, IDs, build counts, chapter assets, artifacts, and companion poses. Report both the command and its result.
+The validator is dependency-free and checks catalog shape, spellable words, IDs, build counts, chapter assets, artifacts, companion poses, and literal runtime asset references. Report both the command and its result.

@@ -111,3 +111,7 @@
 - Добавлены platform unit-тесты для GameplayAPI pause aggregation, cloud-empty fallback, leaderboard score bounds и rewarded callback.
 - Timeout helpers в platform.js теперь очищают timers после resolve/reject; unit suite не удерживает процесс искусственными 3.5-секундными таймерами.
 - Повторный full gate обязателен после следующего изменения в state, platform или route flow.
+
+- Content validator расширен: теперь он также сканирует literal asset references в index.html, JS и CSS и проверяет их существование.
+
+- Runtime asset-reference validation проверена на текущем полном наборе ассетов; следующий content-шаг — manifest keys и визуальный audit, не механическая проверка существования файлов.
