@@ -29,6 +29,19 @@ test("boots fallback and completes the first level", async ({ page }) => {
   expect(consoleErrors).toEqual([]);
 });
 
+test("persists campaign progress across a reload", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".game")).toBeVisible();
+  await solveLevel(page);
+  await expect(page.locator(".result-modal")).toBeVisible();
+  await page.locator(".result-footer [data-action='home']").click();
+  await expect(page.locator(".home")).toBeVisible();
+  await expect(page.locator(".journey-card")).toContainText("Уровень 2 из 304");
+
+  await page.reload();
+  await expect(page.locator(".home")).toBeVisible();
+  await expect(page.locator(".journey-card")).toContainText("Уровень 2 из 304");
+});
 test("keeps the game usable at the mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");

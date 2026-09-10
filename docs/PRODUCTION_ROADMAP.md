@@ -13,8 +13,8 @@
 - Assets: 237 файлов — 156 PNG, 77 WebP, 4 WOFF2; крупные wide-backgrounds требуют performance-аудита.
 - SDK: Yandex Games с локальным fallback, cloud save, ads, payments, leaderboards и analytics.
 - Git: ветка main, GitHub remote подключён; изменения проходят маленькими проверяемыми коммитами.
-- Уже проверено: синтаксис JS-модулей, контентный валидатор, локальный fallback smoke-flow на desktop и mobile.
-- Ограничения: пока нет package.json, build pipeline, unit/browser test runner и CI; main.js и meta-screens.js остаются крупными UI/state-модулями.
+- Уже проверено: синтаксис JS-модулей, контентный валидатор, production build, performance budgets, локальный fallback smoke-flow на desktop и mobile, persistence после reload.
+- Текущие ограничения: полноценные SDK-only сценарии и visual audit в Yandex Games ещё не подтверждены; main.js и meta-screens.js остаются крупными UI/state-модулями.
 
 ## Порядок работ
 
@@ -94,8 +94,8 @@
 ## P0 checkpoint — 2026-09-10
 
 - Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
-- Добавлены 22 unit-теста для core, config, economy, storage и commerce.
-- Добавлены 3 Playwright smoke-теста; они собирают dist и проверяют production preview.
+- Добавлены 27 unit-тестов для core, config, economy, storage, commerce и platform.
+- Добавлены 4 Playwright smoke-теста; они собирают dist и проверяют production preview, fallback navigation и persistence после reload.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
 - Local verification: npm run check:all проходит.
