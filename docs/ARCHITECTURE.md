@@ -34,6 +34,7 @@ Domain functions receive explicit inputs and return values or mutate one explici
 
 These modules own asynchronous external systems:
 
+- data-loader.js: bounded JSON requests with timeout, transient retry and safe error propagation.
 - platform.js: Yandex SDK lifecycle, cloud save, ads, payments bridge, leaderboards, pause/resume and server time.
 - commerce.js: catalog, purchase validation, receipt ledger, consume and recovery.
 - analytics.js: Metrika transport and local/test suppression.

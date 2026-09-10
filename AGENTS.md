@@ -23,6 +23,7 @@
 - `src/storage.js` — локальное состояние, санитизация, миграции и merge сохранений.
 - `src/platform.js` — адаптер SDK Яндекс Игр: cloud save, реклама, платежи, полноэкранный режим, gameplay API, лидерборды.
 - `src/config.js` — дефолтная конфигурация, нормализация и remote flags.
+- src/data-loader.js — bounded JSON-загрузка каталогов и config с timeout/retry.
 - `src/economy.js`, `src/commerce.js` — экономика, магазин, рекламные награды, покупки и receipt ledger.
 - `src/meta-screens.js`, `src/victory-screen.js` — мета-экраны и экран завершения уровня.
 - `src/content.js` — главы, спутники и chapter metadata.

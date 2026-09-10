@@ -215,3 +215,9 @@
 - Исправлена миграция legacy-настроек: isMusicMuted теперь обрабатывается независимо от общего isMuted и SFX mute.
 - Добавлен regression-тест для сохранения включённой музыки при отключённом звуке интерфейса.
 - Local verification: 6 storage-тестов и syntax gate проходят успешно.
+
+## P1 data loading resilience checkpoint — 2026-09-10
+
+- Добавлен единый src/data-loader.js для JSON-каталогов: timeout, повтор transient-ошибок и отказ без повторов для постоянного HTTP failure.
+- Campaign, endless и live-config используют общий loader; зависший fetch больше не блокирует boot бесконечно.
+- Добавлены unit-тесты на retry, permanent HTTP failure и timeout.

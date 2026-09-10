@@ -16,6 +16,7 @@ import {weekKey,ensureRewardedDay as ensureRewardedDayState,rewardedRemaining as
 import {CommerceService} from './commerce.js';
 import {createMetaScreens} from './meta-screens.js';
 import {renderVictory} from './victory-screen.js';
+import {fetchJson} from './data-loader.js';
 import {companionLine,chapterCompanionLine,recordCompanionMoment} from './companion-dialogue.js';
 const victoryRewardClass='companion-reward';
 const app=document.querySelector('#app'),modalRoot=document.querySelector('#modal-root');
@@ -113,7 +114,7 @@ const screens=createMetaScreens({
 const {home,mapPage,albumPage,artifact,petsPage,petAction,showSettings,help,onboarding,profile,wallet,shop,shopConfirm,goals,gift,daily,weekly,leaderboard,startDaily}=screens;
 async function ensureEndlessLevels(){
  if(Array.isArray(endlessLevels)&&endlessLevels.length>=2000)return endlessLevels;
- if(!endlessLoad)endlessLoad=fetch('./endless-levels.json').then(r=>{if(!r.ok)throw new Error('Endless data unavailable');return r.json();}).then(data=>{if(!Array.isArray(data)||data.length<2000)throw new Error('Invalid endless catalog');endlessLevels=data;return data;}).catch(error=>{endlessLoad=null;throw error;});
+ if(!endlessLoad)endlessLoad=fetchJson('./endless-levels.json',{attempts:2,timeoutMs:8000,retryDelayMs:250}).then(data=>{if(!Array.isArray(data)||data.length<2000)throw new Error('Invalid endless catalog');endlessLevels=data;return data;}).catch(error=>{endlessLoad=null;throw error;});
  return endlessLoad;
 }
 async function startEndless(index=Math.max(1,state().endless.best+1)){
@@ -288,8 +289,8 @@ window.addEventListener('blur',()=>platform.pause('blur',true));window.addEventL
 window.addEventListener('pagehide',()=>{store.persist();void platform.flush();});window.addEventListener('resize',()=>{ui.drag=null;if(ui.screen!=='game')return;const keep=ui.selected.slice();requestAnimationFrame(()=>{ui.selected=keep;fitBoard();updateSelection();updateTutorialGuide();});});
 window.addEventListener('online',()=>{void platform.flush();});
 async function boot(){try{analytics.init();analytics.send('session_start');analytics.send('boot_start');
- const dataPromise=fetch('./levels.json').then(r=>{if(!r.ok)throw new Error('Level data unavailable');return r.json();});
- const configPromise=fetch('./live-config.json').then(r=>r.ok?r.json():{}).catch(()=>({}));
+ const dataPromise=fetchJson('./levels.json',{attempts:2,timeoutMs:8000,retryDelayMs:250});
+ const configPromise=fetchJson('./live-config.json',{attempts:2,timeoutMs:5000,retryDelayMs:150}).catch(()=>({}));
  const sdkPromise=platform.init();
  const bootImage=chapterAsset(0,matchMedia('(max-width:700px)').matches?'portrait':'wide');
  const assetsPromise=Promise.allSettled([document.fonts.load('700 16px Golos'),document.fonts.load('900 32px Mulish'),new Promise(resolve=>{const image=new Image();image.onload=resolve;image.onerror=resolve;image.src=bootImage;})]);
