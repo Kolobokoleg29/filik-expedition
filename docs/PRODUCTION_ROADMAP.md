@@ -115,3 +115,8 @@
 - Content validator расширен: теперь он также сканирует literal asset references в index.html, JS и CSS и проверяет их существование.
 
 - Runtime asset-reference validation проверена на текущем полном наборе ассетов; следующий content-шаг — manifest keys и визуальный audit, не механическая проверка существования файлов.
+
+## P0 performance-budget checkpoint — 2026-09-10
+
+- Добавлен budget checker для production dist: required outputs, initial JS/CSS/HTML, total dist и largest отдельного asset.
+- Текущий baseline: initial 257 KB, total 25,837 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
