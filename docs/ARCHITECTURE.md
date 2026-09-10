@@ -25,7 +25,7 @@ These modules must stay as deterministic as possible and must not depend on DOM:
 - config.js: defaults, normalization, remote flag conversion.
 - endless-meta.js: endless ranks and milestones.
 - captains.js and companions.js: unlock rules, companion effects, identity metadata.
-- storage.js: serializable save state, sanitization, migration, merge and local persistence.
+- storage.js: serializable save state, sanitization, migration, merge, local persistence and the account marker used to isolate Yandex profiles.
 - progression.js: campaign, daily and endless completion state transitions, rewards and idempotence.
 
 Domain functions receive explicit inputs and return values or mutate one explicitly owned state object. They must be unit-testable in Node.
@@ -101,7 +101,7 @@ SDK purchase → product/token validation → receipt ledger + reward state → 
 
 Cloud sync:
 
-local SaveStore → bounded SDK getData → sanitize/merge → local persistence → queued bounded flush. A missing or failed SDK must leave local fallback playable.
+local SaveStore → bounded SDK getData → identify player with getUniqueID() → sanitize/merge or account-isolated replace → local persistence → queued bounded flush. A missing or failed SDK must leave local fallback playable; a switched account must never inherit the previous account's local state.
 
 ## Required test layers
 

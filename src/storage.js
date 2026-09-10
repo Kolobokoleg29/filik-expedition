@@ -1,5 +1,6 @@
 import {clampInt} from './core.js';
 export const SAVE_KEY='expedition_rebus_v5';
+export const ACCOUNT_KEY=SAVE_KEY+'_account';
 // Receipts are an append-only safety ledger. A generous bound protects local
 // storage from abuse without reintroducing the old 100-token replay window.
 const MAX_PURCHASE_RECEIPTS=5000;
@@ -92,9 +93,10 @@ export function migrateLegacy(data={}){
   if(settings.isMuted!==undefined||settings.isSfxMuted!==undefined)s.settings.sound=!(settings.isMuted||settings.isSfxMuted);if(settings.isMusicMuted!==undefined)s.settings.music=!(settings.isMuted||settings.isMusicMuted);
   s.updatedAt=clampInt(data.lastSaveTime||0,0,9e15);return sanitizeState(s);
 }
+const normalizeAccountId=v=>typeof v==='string'&&v.length>0&&v.length<=256?v:'';
 const economyFingerprint=s=>JSON.stringify([s.coins,s.hearts,s.freeHints,s.bonusBank,s.pets,s.activePet,s.petLevels,s.companionBondXp,s.companionMemories,s.inventory,s.profile,s.activeCaptain,s.captains,s.companionUsage,s.endless,s.daily,s.gift,s.goals,s.weekly,s.rewarded,s.processedPurchases,s.purchaseGrants,s.purchaseLedger,s.adsRemoved,s.starterClaimed]);
 export class SaveStore {
-  constructor(storage){this.storage=storage;this.persistent=true;this.onChange=()=>{};
+  constructor(storage){this.storage=storage;this.persistent=true;this.onChange=()=>{};this.accountId=normalizeAccountId(storage.getItem?.(ACCOUNT_KEY));
     const main=parse(storage,SAVE_KEY),backup=parse(storage,SAVE_KEY+'_backup');
     if(main?.version===5||backup?.version===5)this.state=mergeStates(main,backup);
     else {const legacy={};for(const k of ['game_progress','game_economy','game_companions','game_settings','game_purchases'])legacy[k]=parse(storage,k);this.state=migrateLegacy(legacy);}
@@ -102,6 +104,8 @@ export class SaveStore {
   }
   save(){const fingerprint=economyFingerprint(this.state);if(fingerprint!==this.economyFingerprint){this.state.economyRevision++;this.economyFingerprint=fingerprint;}this.state.updatedAt=Date.now();this.state.revision++;this.persist();this.onChange(this.state);}
   persist(){try{const encoded=JSON.stringify(this.state);this.storage.setItem(SAVE_KEY,encoded);this.storage.setItem(SAVE_KEY+'_backup',encoded);this.persistent=true;}catch{this.persistent=false;}}
+  setAccountId(accountId){this.accountId=normalizeAccountId(accountId);try{if(this.accountId)this.storage.setItem(ACCOUNT_KEY,this.accountId);else if(typeof this.storage.removeItem==='function')this.storage.removeItem(ACCOUNT_KEY);else this.storage.setItem(ACCOUNT_KEY,'');this.persistent=true;}catch{this.persistent=false;}return this.accountId;}
+  replace(raw,accountId=this.accountId){this.state=raw?.version===5?sanitizeState(raw):freshState();this.economyFingerprint=economyFingerprint(this.state);this.setAccountId(accountId);this.persist();return this.state;}
   merge(raw){const remote=sanitizeState(raw),merged=mergeStates(this.state,remote);const localChanged=JSON.stringify(merged)!==JSON.stringify(this.state),remoteChanged=JSON.stringify(merged)!==JSON.stringify(remote);this.state=merged;this.persist();return {localChanged,remoteChanged};}
   spend(amount){if(!Number.isInteger(amount)||amount<=0||this.state.coins<amount)return false;this.state.coins-=amount;return true;}
 }

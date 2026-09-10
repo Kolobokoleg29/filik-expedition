@@ -119,7 +119,7 @@
 ## P0 performance-budget checkpoint — 2026-09-10
 
 - Добавлен budget checker для production dist: required outputs, initial JS/CSS/HTML, total dist и largest отдельного asset.
-- Текущий baseline: initial 259 KB, total 25,839 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
+- Текущий baseline: initial 260 KB, total 25,204 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
 
 ## P0 release-preflight checkpoint — 2026-09-10
 
@@ -162,7 +162,7 @@
 - Runtime сохраняет один responsive background request через canonical assets/UI paths; CSS custom property использует stylesheet-relative ../assets base.
 - Vite build-plugin копирует только assets/UI, canonical favicon перепривязывается к UI-файлу, лишние hashed favicon и дублирующие root fonts не попадают в release archive.
 - Добавлен Playwright performance regression: computed background не равен none, нет /assets/assets paths или failed requests, mobile не получает horizontal overflow.
-- Новый baseline: initial 259 KB, total dist 25,203 KB, desktop/mobile boot без duplicate camp background requests.
+- Новый baseline: initial 260 KB, total dist 25,204 KB, desktop/mobile boot без duplicate camp background requests.
 - Local verification: npm run build, npm run test:budget, npm run test:release и performance E2E проходят.
 
 ## P1 responsive QA checkpoint — 2026-09-10
@@ -187,3 +187,11 @@
 - CommerceService теперь сериализует purchase и restore: параллельные операции возвращают явный busy-результат и не открывают второй платежный поток.
 - UI сообщает игроку, что другая операция покупки ещё выполняется; существующий receipt ledger и порядок cloud save → consume сохранены.
 - Добавлен unit regression на взаимную блокировку buy/restore; полный набор вырос до 41 теста.
+
+
+## P1 account-bound cloud checkpoint — 2026-09-10
+
+- SaveStore хранит отдельный локальный account marker; Yandex player identity читается через getUniqueID().
+- Первый SDK-вход сохраняет локальный fallback в пустой cloud-профиль, но смена аккаунта заменяет состояние только новым cloud payload или fresh state, без monotonic merge старого профиля.
+- При пустом или аварийном cloud-ответе после смены аккаунта старое состояние из localStorage изолируется; добавлены regression-тесты для remote, empty и failed account-switch сценариев.
+- Local verification: 44 unit-теста проходят; реальный account-switch, cloud, payments и ads всё ещё требуют draft/staging проверки Яндекс Игр.

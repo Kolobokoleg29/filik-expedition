@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { CommerceService } from "../../src/commerce.js";
 import { YandexPlatform } from "../../src/platform.js";
-import { freshState } from "../../src/storage.js";
+import { freshState, SAVE_KEY, SaveStore } from "../../src/storage.js";
 import { normalizeConfig } from "../../src/config.js";
 
 function makeStore() {
@@ -15,6 +15,13 @@ function makeHost() {
 
 function makeAnalytics() {
   return { send() {} };
+}
+
+class MemoryStorage {
+  constructor() { this.entries = new Map(); }
+  getItem(key) { return this.entries.get(key) ?? null; }
+  setItem(key, value) { this.entries.set(key, String(value)); }
+  removeItem(key) { this.entries.delete(key); }
 }
 
 test("releases the ad boundary after an error before the ad opens", async () => {
@@ -224,4 +231,87 @@ test("serializes purchase and restore operations", async () => {
   resolveRestore([]);
   assert.deepEqual(await restorePromise, { ok: true, restored: 0 });
   assert.equal(service.busy, null);
+});
+
+test("does not merge the previous account into a switched cloud profile", async () => {
+  const store = new SaveStore(new MemoryStorage());
+  store.state.completed = [1];
+  store.state.coins = 999;
+  store.save();
+  store.setAccountId("account-a");
+
+  const remote = freshState();
+  remote.completed = [2];
+  remote.coins = 77;
+  const platform = new YandexPlatform(store, makeHost());
+  let writes = 0;
+  platform.sdk = {
+    async getPlayer() {
+      return {
+        getUniqueID() { return "account-b"; },
+        async getData() { return { [SAVE_KEY]: remote }; },
+        async setData() { writes++; }
+      };
+    }
+  };
+
+  assert.equal(await platform.loadCloud({ refreshPlayer: true }), true);
+  assert.deepEqual(store.state.completed, [2]);
+  assert.equal(store.state.coins, 77);
+  assert.equal(store.accountId, "account-b");
+  assert.equal(writes, 0);
+});
+
+
+test("resets to a fresh profile when a switched cloud account is empty", async () => {
+  const store = new SaveStore(new MemoryStorage());
+  store.state.completed = [1, 2];
+  store.state.coins = 999;
+  store.save();
+  store.setAccountId("account-a");
+
+  let writes = 0;
+  const platform = new YandexPlatform(store, makeHost());
+  platform.sdk = {
+    async getPlayer() {
+      return {
+        getUniqueID() { return "account-b"; },
+        async getData() { return null; },
+        async setData(payload) {
+          writes++;
+          assert.equal(payload[SAVE_KEY].completed.length, 0);
+          assert.equal(payload[SAVE_KEY].coins, 120);
+        }
+      };
+    }
+  };
+
+  assert.equal(await platform.loadCloud({ refreshPlayer: true }), true);
+  assert.deepEqual(store.state.completed, []);
+  assert.equal(store.state.coins, 120);
+  assert.equal(store.accountId, "account-b");
+  assert.equal(writes, 1);
+});
+
+test("does not expose the previous profile when switched cloud loading fails", async () => {
+  const store = new SaveStore(new MemoryStorage());
+  store.state.completed = [1];
+  store.save();
+  store.setAccountId("account-a");
+
+  const platform = new YandexPlatform(store, makeHost());
+  platform.sdk = {
+    async getPlayer() {
+      return {
+        getUniqueID() { return "account-b"; },
+        async getData() { throw new Error("offline"); }
+      };
+    }
+  };
+
+  assert.equal(await platform.loadCloud({ refreshPlayer: true }), false);
+  assert.deepEqual(store.state.completed, []);
+  assert.equal(store.state.coins, 120);
+  assert.equal(store.accountId, "account-b");
+  assert.equal(platform.cloudReady, false);
 });

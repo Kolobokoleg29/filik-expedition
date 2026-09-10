@@ -1,7 +1,8 @@
-import {SAVE_KEY,migrateLegacy} from './storage.js';
+import {SAVE_KEY,migrateLegacy,sanitizeState} from './storage.js';
 import {applyLanguage,readSdkLang} from './i18n.js';
 const timeout=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve(null);},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve(value);},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
 const settled=(promise,ms)=>new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{done=true;resolve({ok:false,value:null});},ms);Promise.resolve(promise).then(value=>{if(done)return;done=true;clearTimeout(timer);resolve({ok:true,value});},error=>{if(done)return;done=true;clearTimeout(timer);reject(error);});});
+const playerAccountId=player=>{try{const id=player?.getUniqueID?.();return typeof id==='string'&&id.length<=256?id:'';}catch{return ''}};
 export class YandexPlatform {
   constructor(store,host=window,options={}){this.store=store;this.host=host;this.sdk=null;this.player=null;this.paymentsApi=null;this.cloudReady=false;this.readySent=false;this.readyWanted=false;this.wanted=false;this.playing=false;this.reasons=new Set();this.listeners=[];this.adBusy=false;this.lastAd=Date.now();this.lastCloud=0;this.dirty=false;this.timer=null;this.syncing=false;this.cloudRequestId=0;this.accountSelectionOpen=false;this.language='ru';this.adCooldownMs=180000;this.adOpenTimeout=options.adOpenTimeout??15000;this.adSessionTimeout=options.adSessionTimeout??120000;this.lastStatus=null;this.onStatus=()=>{};this.onAccountSelection=()=>{};store.onChange=()=>this.queueSave();}
   debugMode(){return /(?:^|[?&])debug-mode(?:=|&|$)/.test(this.host.location?.search||'');}
@@ -53,26 +54,50 @@ export class YandexPlatform {
   async loadCloud({refreshPlayer=false}={}){
     if(!this.sdk)return false;
     const requestId=++this.cloudRequestId;
+    const previousAccountId=this.store.accountId||'';
+    const canIsolate=typeof this.store.replace==='function';
+    let currentPlayer=null;
+    let accountId='';
+    let accountChanged=false;
     this.status('cloud','loading');
     try{
       if(refreshPlayer){this.player=null;this.paymentsApi=null;this.cloudReady=false;}
-      const player=this.player||await timeout(this.sdk.getPlayer({scopes:false}),3500);
+      currentPlayer=this.player||await timeout(this.sdk.getPlayer({scopes:false}),3500);
       if(requestId!==this.cloudRequestId)return false;
-      this.player=player;
+      this.player=currentPlayer;
       if(!this.player){this.status('cloud','unavailable');return false;}
+      accountId=playerAccountId(this.player);
+      accountChanged=(refreshPlayer&&(!previousAccountId||!accountId||previousAccountId!==accountId))||(Boolean(previousAccountId&&accountId&&previousAccountId!==accountId));
       const result=await settled(this.player.getData(),3500);
       if(requestId!==this.cloudRequestId)return false;
-      if(!result.ok){this.status('cloud','load_timeout');return false;}
+      if(!result.ok){
+        if(accountChanged&&canIsolate)this.store.replace(null,accountId);
+        this.status('cloud','load_timeout');
+        return false;
+      }
       const data=result.value;
-      if(!data){this.status('cloud','empty');this.cloudReady=true;return true;}
+      const hasLegacy=Boolean(data?.currentLevel||data?.game_progress||data?.progress);
+      const remoteRaw=data?.[SAVE_KEY]??(hasLegacy?migrateLegacy(data):null);
+      const hasRemote=Boolean(remoteRaw);
+      const remoteState=hasRemote?sanitizeState(remoteRaw):null;
       let reconciliation=null;
-      if(data[SAVE_KEY])reconciliation=this.store.merge(data[SAVE_KEY]);
-      else if(data.currentLevel||data.game_progress||data.progress)reconciliation=this.store.merge(migrateLegacy(data));
+      if(accountChanged&&canIsolate){
+        this.store.replace(remoteState,accountId);
+        this.status('account','isolated');
+      }else{
+        if(accountId&&!previousAccountId)this.store.setAccountId?.(accountId);
+        if(remoteState)reconciliation=this.store.merge(remoteState);
+      }
       this.cloudReady=true;
-      this.status('cloud','ready');
-      if(!reconciliation||reconciliation.remoteChanged){this.dirty=true;if(!await this.flush(true))return false;}
+      this.status('cloud',hasRemote?'ready':'empty');
+      const needsWrite=accountChanged?(canIsolate&&(!hasRemote||hasLegacy)):(hasRemote?(!reconciliation||reconciliation.remoteChanged):true);
+      if(needsWrite){this.dirty=true;if(!await this.flush(true))return false;if(!hasRemote)this.status('cloud','empty');}
       return true;
-    }catch{this.status('cloud','load_error');return false;}
+    }catch{
+      if((refreshPlayer||accountChanged)&&canIsolate)this.store.replace(null,accountId||playerAccountId(currentPlayer));
+      this.status('cloud','load_error');
+      return false;
+    }
   }
   ready(){this.readyWanted=true;if(!this.sdk||this.readySent)return;try{this.sdk.features?.LoadingAPI?.ready();this.readySent=true;this.status('loading_api','ready');}catch{this.status('loading_api','error');}}
   setGameplay(wanted){this.wanted=!!wanted;this.updateGameplay();}
