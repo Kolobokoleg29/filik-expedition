@@ -82,6 +82,44 @@ test("keeps the next route visible in the diary", async ({ page }) => {
   await expect(page.locator(".story-modal-hero")).toBeVisible()
 })
 
+test("makes the active companion state obvious", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("expedition_rebus_v5", JSON.stringify({
+      version: 5,
+      onboardingSeen: true,
+      completed: [],
+      lastLevel: 1,
+      pets: ["owl"],
+      activePet: "owl",
+      petLevels: { owl: 1 },
+      companionBondXp: { owl: 20 },
+      hearts: 0
+    }));
+  });
+  await page.goto("/");
+  await expect(page.locator(".home")).toBeVisible();
+;
+  await page.locator("[data-action=pets]").first().click();
+  const active = page.locator('.pet-card[data-active="true"]');
+  await expect(active).toHaveCount(1);
+  await expect(active.locator(".pet-status")).toContainText("Сейчас с вами");
+  await expect(active.locator("[data-action=pet-select]")).toHaveAttribute("aria-pressed", "true");
+});
+
+test("keeps goals and shop surfaces actionable on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  if (await page.locator(".game").count()) await page.locator("[data-action=home]").first().click();
+  await page.locator("[data-action=goals]").first().click();
+  await expect(page.locator('[data-modal-type="goals"]')).toBeVisible();
+  await expect(page.locator(".next-goal")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await page.locator("[data-action=shop]").first().click();
+  await expect(page.locator('[data-modal-type="shop"]')).toBeVisible();
+  await expect(page.locator(".shop-wallet")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
+});
+
 test("surfaces the current story from camp", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".game")).toBeVisible();
