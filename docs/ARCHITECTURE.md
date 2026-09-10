@@ -26,6 +26,7 @@ These modules must stay as deterministic as possible and must not depend on DOM:
 - endless-meta.js: endless ranks and milestones.
 - captains.js and companions.js: unlock rules, companion effects, identity metadata.
 - storage.js: serializable save state, sanitization, migration, merge and local persistence.
+- progression.js: campaign, daily and endless completion state transitions, rewards and idempotence.
 
 Domain functions receive explicit inputs and return values or mutate one explicitly owned state object. They must be unit-testable in Node.
 

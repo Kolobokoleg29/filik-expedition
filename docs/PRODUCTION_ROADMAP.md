@@ -94,7 +94,7 @@
 ## P0 checkpoint — 2026-09-10
 
 - Добавлен npm/Vite pipeline: dev, production build и preview с копированием runtime-каталогов и assets в dist.
-- Добавлены 27 unit-тестов для core, config, economy, storage, commerce и platform.
+- Добавлены 31 unit-тест для core, config, economy, storage, commerce, platform и progression.
 - Добавлены 5 Playwright smoke-тестов; они собирают dist и проверяют production preview, fallback navigation, persistence после reload и защиту от повторной награды при replay.
 - Добавлен GitHub Actions quality workflow: npm ci, syntax, content, unit, build, Chromium и browser smoke.
 - Локальная аналитика не обращается к внешнему Metrika без явного query-флага analytics; production behavior сохранён.
@@ -119,7 +119,7 @@
 ## P0 performance-budget checkpoint — 2026-09-10
 
 - Добавлен budget checker для production dist: required outputs, initial JS/CSS/HTML, total dist и largest отдельного asset.
-- Текущий baseline: initial 257 KB, total 25,837 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
+- Текущий baseline: initial 258 KB, total 25,838 KB, largest asset 247 KB; лимиты зафиксированы в scripts/check-budgets.mjs.
 
 ## P0 release-preflight checkpoint — 2026-09-10
 
@@ -127,3 +127,9 @@
 - AGENTS.md синхронизирован с фактическим npm/Vite/Playwright/CI-процессом.
 - Local verification: npm run check:all проходит после добавления preflight.
 - Browser regression: повторное прохождение завершённого уровня не меняет coins и completed в SaveStore.
+
+## P1 progression checkpoint — 2026-09-10
+
+- Completion state transitions вынесены из main.js в src/progression.js без переноса SDK, analytics, DOM и companion side effects.
+- Campaign, daily и endless reward paths теперь имеют отдельные unit-тесты на first completion, повторный вызов, chapter bonus, daily cap и milestone idempotence.
+- Main.js остаётся orchestrator, а SaveStore.state остаётся единственным источником persistent state.

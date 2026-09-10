@@ -1,7 +1,7 @@
 import {formatCoins} from './ui-format.js';
 import {ABILITIES,applyCompanionEvent} from './companions.js';
 import {captainById,captainIsUnlocked,unlockCaptains,captainTitle as captainName,captainMotto} from './captains.js';
-import {endlessMilestone} from './endless-meta.js';
+import {applyCampaignCompletion,applyEndlessCompletion,applyDailyCompletion} from './progression.js';
 import {CHAPTERS,COMPANIONS} from './content.js';
 import {CHAPTER_IMAGES} from './chapter-images.js';
 import {chapterVisual} from './chapter-visuals.js';
@@ -182,13 +182,29 @@ function bonusModal(){if(ui.screen!=='game'||!ui.progress)return;const c=econ(),
 function completeLevel(){if(ui.progress.finished)return;
  analytics.send('level_complete',{level:ui.level.id,mode:ui.mode,hints:ui.progress.hints,stars:levelStars(ui.progress.hints)});ui.progress.finished=true;platform.setGameplay(false);const s=state(),id=ui.level.id,starsEarned=levelStars(ui.progress.hints);
  let reward=0,hearts=0,chapterDone=false,campaignFinale=false,dailyDone=false,milestoneReached=false,milestoneTitle=null,milestoneReward=null,companionUnlocked=null,goalsReady=[],companionRewards=[];
- if(ui.mode==='campaign'){const c=econ(),firstCompletion=!s.completed.includes(id);if(firstCompletion){s.completed.push(id);s.completed.sort((a,b)=>a-b);reward=c.campaignLevelCoins;hearts=c.campaignLevelHearts;if(id%8===0){reward+=c.campaignChapterCoins;hearts+=c.campaignChapterHearts;chapterDone=true;}}campaignFinale=firstCompletion&&id===levels.length;s.stars[id]=Math.max(s.stars[id]||0,starsEarned);unlockCaptains(s,c=>analytics.send('captain_unlocked',{captain:c.id,source:'achievement'}));if(chapterDone)analytics.send('chapter_progress',{chapter:Math.ceil(id/8),completed:s.completed.length});if(firstCompletion&&id===1)analytics.send('activation_level_complete',{level:1,stars:starsEarned});if(campaignFinale)analytics.send('campaign_complete',{levels:levels.length,stars:starsTotal(s)});}
- else if(ui.mode==='endless'){const c=econ(),index=id-ENDLESS_BASE,day=dateKey(platform.now()),previousBest=s.endless.best;s.endless.best=Math.max(s.endless.best,index);const milestone=endlessMilestone(index);if(milestone&&!s.endless.milestones.includes(index)){s.endless.milestones.push(index);milestoneReached=true;milestoneTitle=milestone.title;milestoneReward=milestone.reward;analytics.send('endless_milestone',{level:index,title:milestone.title,reward:milestone.reward});}unlockCaptains(s,c=>analytics.send('captain_unlocked',{captain:c.id,source:'endless'}));if(s.endless.rewardDay!==day){s.endless.rewardDay=day;s.endless.rewardedStages=0;}if(!ui.replay&&s.endless.rewardedStages<c.endlessDailyRewardedStages){reward=c.endlessCoins;s.endless.rewardedStages++;}hearts=!ui.replay&&c.endlessHeartsEvery>0&&index%c.endlessHeartsEvery===0?1:0;if(index>previousBest)void platform.leaderboardSubmit(liveConfig.leaderboards.endless,index,`best:${index}`);}
- else{const c=econ(),d=s.daily;d.step=Math.min(3,d.step+1);if(d.step===3&&!d.claimed){reward=c.dailyCoins;hearts=c.dailyHearts;d.claimed=true;dailyDone=true;analytics.send('daily_completed',{day:d.day});}}
+ if(ui.mode==='campaign'){
+  const completion=applyCampaignCompletion(s,{id,starsEarned,economy:econ(),levelsTotal:levels.length});
+  reward=completion.reward;hearts=completion.hearts;chapterDone=completion.chapterDone;campaignFinale=completion.campaignFinale;
+  unlockCaptains(s,c=>analytics.send('captain_unlocked',{captain:c.id,source:'achievement'}));
+  if(chapterDone)analytics.send('chapter_progress',{chapter:Math.ceil(id/8),completed:s.completed.length});
+  if(completion.firstCompletion&&id===1)analytics.send('activation_level_complete',{level:1,stars:starsEarned});
+  if(campaignFinale)analytics.send('campaign_complete',{levels:levels.length,stars:starsTotal(s)});
+}
+else if(ui.mode==='endless'){
+  const completion=applyEndlessCompletion(s,{index:id-ENDLESS_BASE,economy:econ(),day:dateKey(platform.now()),replay:ui.replay});
+  reward=completion.reward;hearts=completion.hearts;milestoneReached=completion.milestoneReached;milestoneTitle=completion.milestoneTitle;milestoneReward=completion.milestoneReward;
+  if(milestoneReached)analytics.send('endless_milestone',{level:completion.index,title:milestoneTitle,reward:milestoneReward});
+  unlockCaptains(s,c=>analytics.send('captain_unlocked',{captain:c.id,source:'endless'}));
+  if(completion.index>completion.previousBest)void platform.leaderboardSubmit(liveConfig.leaderboards.endless,completion.index,'best:'+completion.index);
+}
+else{
+  const completion=applyDailyCompletion(s,{economy:econ()});
+  reward=completion.reward;hearts=completion.hearts;dailyDone=completion.dailyDone;
+}
  if(!ui.replay&&ui.mode!=='daily'){const key=weekKey(platform.now()),cfg=weeklyCfg();if(s.weekly.key!==key)s.weekly={key,steps:0,claimed:false};s.weekly.steps=Math.min(cfg.steps,s.weekly.steps+1);}
  if(chapterDone&&id===8&&!ui.replay&&!s.pets.includes('owl')){s.pets.push('owl');s.petLevels.owl??=1;if(!s.activePet)s.activePet='owl';companionUnlocked='owl';analytics.send('companion_unlocked',{companion:'owl',source:'chapter'});}
  goalsReady=GOALS.filter(goal=>!s.goals.includes(goal.id)&&goalValue(goal,s,starsTotal)>=goal.need).map(goal=>goal.id);
- s.coins+=reward;s.hearts+=hearts;if(!ui.replay){const note=e=>{const r=petEvent(e);if(r)companionRewards.push(r);};if(chapterDone)note('chapter');if(dailyDone)note('daily');if(milestoneReached)note('milestone');if(starsEarned===3)note('perfect');note('victory');}persistLevel();void platform.flush();audio.play('win');ui.finishTimer=setTimeout(()=>victory({reward,hearts,starsEarned,chapterDone,campaignFinale,dailyDone,companionUnlocked,milestoneTitle,milestoneReward,goalsReady,companionRewards}),550);
+ if(!ui.replay){const note=e=>{const r=petEvent(e);if(r)companionRewards.push(r);};if(chapterDone)note('chapter');if(dailyDone)note('daily');if(milestoneReached)note('milestone');if(starsEarned===3)note('perfect');note('victory');}persistLevel();void platform.flush();audio.play('win');ui.finishTimer=setTimeout(()=>victory({reward,hearts,starsEarned,chapterDone,campaignFinale,dailyDone,companionUnlocked,milestoneTitle,milestoneReward,goalsReady,companionRewards}),550);
 }
 function victory(result){
  ui.victoryResult=result;const rendered=renderVictory({ui,state,chapterFor,artifactImage,icon,stars,btn,modal,save,celebrate},result);
